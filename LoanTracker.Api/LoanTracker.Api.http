@@ -1,6 +1,119 @@
-@LoanTracker.Api_HostAddress = http://localhost:5227
+@LoanTracker.Api_HostAddress = https://localhost:7069
 
-GET {{LoanTracker.Api_HostAddress}}/weatherforecast/
+### Get all customers
+GET {{LoanTracker.Api_HostAddress}}/customers
 Accept: application/json
 
-###
+### Get customer by ID
+GET {{LoanTracker.Api_HostAddress}}/customers/1
+Accept: application/json
+
+### Create a new customer
+POST {{LoanTracker.Api_HostAddress}}/customers
+Content-Type: application/json
+
+{
+    "borrowerName": "John Doe",
+    "nrc": "123456789"
+}
+
+### Update an existing customer
+PUT {{LoanTracker.Api_HostAddress}}/customers/1
+Content-Type: application/json
+
+{
+    "borrowerName": "John Doe Updated",
+    "nrc": "987654321"
+}
+
+### Delete a customer
+DELETE {{LoanTracker.Api_HostAddress}}/customers/1
+Accept: application/json
+
+### Get all late fee rules
+GET {{LoanTracker.Api_HostAddress}}/latefeerules
+Accept: application/json
+
+### Get late fee rule by ID
+GET {{LoanTracker.Api_HostAddress}}/latefeerules/1
+Accept: application/json
+
+### Create a new late fee rule
+POST {{LoanTracker.Api_HostAddress}}/latefeerules
+Content-Type: application/json
+
+{
+    "minDaysOverdue": 5,
+    "maxDaysOverdue": 10,
+    "lateFeeAmount": 25.00
+}
+
+### Update an existing late fee rule
+PUT {{LoanTracker.Api_HostAddress}}/latefeerules/1
+Content-Type: application/json
+
+{
+    "minDaysOverdue": 7,
+    "maxDaysOverdue": 15,
+    "lateFeeAmount": 30.00
+}
+
+### Delete a late fee rule
+DELETE {{LoanTracker.Api_HostAddress}}/latefeerules/1
+Accept: application/json
+
+### Get all mortgage loans
+GET {{LoanTracker.Api_HostAddress}}/mortgageloans
+Accept: application/json
+
+### Get mortgage loan by ID
+GET {{LoanTracker.Api_HostAddress}}/mortgageloans/1
+Accept: application/json
+
+### Create a new mortgage loan
+POST {{LoanTracker.Api_HostAddress}}/mortgageloans
+Content-Type: application/json
+
+{
+    "customerId": 1,
+    "loanAmount": 100000,
+    "interestRate": 5.0,
+    "loanTerm": 30,
+    "startDate": "2023-10-01",
+    "downPayment": 20000
+}
+
+### Update an existing mortgage loan
+PUT {{LoanTracker.Api_HostAddress}}/mortgageloans/1
+Content-Type: application/json
+
+{
+    "customerId": 1,
+    "loanAmount": 120000,
+    "interestRate": 4.5,
+    "loanTerm": 25,
+    "startDate": "2023-10-01",
+    "downPayment": 25000
+}
+
+### Delete a mortgage loan
+DELETE {{LoanTracker.Api_HostAddress}}/mortgageloans/1
+Accept: application/json
+
+### Get all payments for a loan
+GET {{LoanTracker.Api_HostAddress}}/payments/1
+Accept: application/json
+
+### Record a payment
+POST {{LoanTracker.Api_HostAddress}}/payments
+Content-Type: application/json
+
+{
+    "loanId": 1,
+    "paymentDate": "2023-10-15",
+    "amountPaid": 536.82
+}
+
+### Generate payment schedule (monthly or yearly)
+GET {{LoanTracker.Api_HostAddress}}/payments/schedule/1?scheduleType=monthly
+Accept: application/json
