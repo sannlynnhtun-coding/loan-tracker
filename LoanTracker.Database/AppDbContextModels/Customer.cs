@@ -9,5 +9,7 @@ public partial class Customer
 
     public string BorrowerName { get; set; } = null!;
 
+    public string? Nrc { get; set; }
+
     public virtual ICollection<MortgageLoan> MortgageLoans { get; set; } = new List<MortgageLoan>();
 }

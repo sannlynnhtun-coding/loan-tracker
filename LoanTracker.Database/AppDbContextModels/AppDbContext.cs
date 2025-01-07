@@ -35,6 +35,9 @@ public partial class AppDbContext : DbContext
 
             entity.Property(e => e.CustomerId).HasColumnName("CustomerID");
             entity.Property(e => e.BorrowerName).HasMaxLength(100);
+            entity.Property(e => e.Nrc)
+                .HasMaxLength(30)
+                .HasColumnName("NRC");
         });
 
         modelBuilder.Entity<LateFeeRule>(entity =>
