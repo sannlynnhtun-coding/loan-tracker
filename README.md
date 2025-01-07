@@ -1,87 +1,87 @@
-﻿# **Loan Tracker: A Comprehensive Mortgage Loan Management System**
+# 🏦 **Loan Tracker: A Comprehensive Mortgage Loan Management System** 🏠
 
 **Loan Tracker** is a powerful and user-friendly system designed to simplify the management of mortgage loans for both **financial institutions** and **borrowers**. It provides a centralized platform to track loans, payments, late fees, and repayment schedules, ensuring transparency and efficiency throughout the loan lifecycle.
 
 ---
 
-### **Key Features**
+### **Key Features** 🔑
 
-1. **Customer Management**:
+1. **👤 Customer Management**:
    - Store and manage customer information, including borrower names and contact details.
    - Link customers to their respective loans for easy tracking.
 
-2. **Loan Management**:
+2. **💼 Loan Management**:
    - Record loan details such as loan amount, interest rate, loan term, start date, monthly payment, and down payment.
    - Calculate the **total repayment amount** (loan amount + interest) automatically.
 
-3. **Payment Tracking**:
+3. **💰 Payment Tracking**:
    - Record all payments made by borrowers, including the payment date, amount paid, and any applicable late fees.
    - Ensure payments do not exceed the total repayment amount.
 
-4. **Dynamic Late Fees**:
+4. **⏰ Dynamic Late Fees**:
    - Automatically calculate late fees based on predefined rules (e.g., $25 for 1–5 days overdue, $50 for 6–10 days overdue, $100 for more than 10 days overdue).
    - Flexible rules can be customized to meet specific business needs.
 
-5. **Payment Schedule Generation**:
+5. **📅 Payment Schedule Generation**:
    - Generate **monthly** or **yearly** payment schedules for borrowers.
    - Show the breakdown of principal, interest, and total payment for each period.
    - Display the remaining balance after each payment.
 
-6. **Repayment Validation**:
+6. **✅ Repayment Validation**:
    - Ensure the sum of all payments matches the total repayment amount.
    - Reject payments that exceed the remaining repayment amount.
 
-7. **Reporting and Insights**:
+7. **📊 Reporting and Insights**:
    - View detailed reports on loans, payments, and late fees.
    - Track the repayment status of each loan (e.g., fully repaid, partially repaid).
 
 ---
 
-### **How It Works**
+### **How It Works** 🛠️
 
-1. **Add Customers**:
+1. **👤 Add Customers**:
    - Customers are added to the system with their basic information (e.g., name).
 
-2. **Create Loans**:
+2. **💼 Create Loans**:
    - For each customer, a loan is created with details such as loan amount, interest rate, loan term, and start date.
    - The system calculates the **monthly payment** and **total repayment amount** automatically.
 
-3. **Record Payments**:
+3. **💰 Record Payments**:
    - Borrowers make payments, which are recorded in the system.
    - Late fees are calculated dynamically based on the number of days overdue.
 
-4. **Generate Payment Schedules**:
+4. **📅 Generate Payment Schedules**:
    - Borrowers can view their payment schedules (monthly or yearly) to understand how much they need to pay each period.
 
-5. **Track Repayment Status**:
+5. **✅ Track Repayment Status**:
    - The system tracks the remaining balance and ensures payments do not exceed the total repayment amount.
    - Once the loan is fully repaid, the system marks it as complete.
 
 ---
 
-### **Benefits**
+### **Benefits** 🌟
 
-1. **For Financial Institutions**:
+1. **🏦 For Financial Institutions**:
    - Streamline loan management and reduce manual errors.
    - Automate late fee calculations and payment tracking.
    - Generate detailed reports for better decision-making.
 
-2. **For Borrowers**:
+2. **👤 For Borrowers**:
    - View payment schedules and track repayment progress.
    - Understand how much of each payment goes toward principal and interest.
    - Avoid overpayments with repayment validation.
 
 ---
 
-### **Example Workflow**
+### **Example Workflow** 🔄
 
-1. **Add a Customer**:
+1. **👤 Add a Customer**:
    - Insert a new customer into the `Customers` table:
      ```sql
      INSERT INTO Customers (BorrowerName) VALUES ('John Doe');
      ```
 
-2. **Create a Loan**:
+2. **💼 Create a Loan**:
    - Insert a new loan into the `MortgageLoans` table:
      ```sql
      DECLARE @LoanAmount DECIMAL(18, 2) = 250000.00;
@@ -97,13 +97,13 @@
      VALUES (1, @LoanAmount, @InterestRate, @LoanTerm, '2023-01-01', 1157.79, 50000.00, @TotalRepayment);
      ```
 
-3. **Record a Payment**:
+3. **💰 Record a Payment**:
    - Use the `RecordPayment` stored procedure to record a payment:
      ```sql
      EXEC RecordPayment @LoanID = 1, @PaymentDate = '2023-01-01', @AmountPaid = 1157.79;
      ```
 
-4. **Generate a Payment Schedule**:
+4. **📅 Generate a Payment Schedule**:
    - Use the `GetPaymentSchedule` stored procedure to generate a monthly or yearly schedule:
      ```sql
      EXEC GetPaymentSchedule @LoanID = 1, @ScheduleType = 'Monthly';
@@ -111,16 +111,16 @@
 
 ---
 
-### **Sample Outputs**
+### **Sample Outputs** 📄
 
-#### Monthly Payment Schedule
+#### 📅 Monthly Payment Schedule
 | Period | PaymentDate | Principal  | Interest  | TotalPayment | RemainingBalance |
 |--------|-------------|------------|-----------|--------------|------------------|
 | 1      | 2023-01-01  | 500.00     | 781.25    | 1281.25      | 249500.00        |
 | 2      | 2023-02-01  | 502.34     | 778.91    | 1281.25      | 248997.66        |
 | 3      | 2023-03-01  | 504.69     | 776.56    | 1281.25      | 248492.97        |
 
-#### Yearly Payment Schedule
+#### 📅 Yearly Payment Schedule
 | Period | PaymentDate | Principal  | Interest  | TotalPayment | RemainingBalance |
 |--------|-------------|------------|-----------|--------------|------------------|
 | 1      | 2023-01-01  | 6000.00    | 9375.00   | 15375.00     | 244000.00        |
@@ -129,16 +129,15 @@
 
 ---
 
-### **Why Choose Loan Tracker?**
-- **Efficiency**: Automates repetitive tasks like payment tracking and late fee calculations.
-- **Transparency**: Provides clear and detailed payment schedules for borrowers.
-- **Flexibility**: Supports both monthly and yearly payment schedules.
-- **Accuracy**: Ensures payments do not exceed the total repayment amount.
-
+### **Why Choose Loan Tracker?** ❓
+- **⚡ Efficiency**: Automates repetitive tasks like payment tracking and late fee calculations.
+- **🔍 Transparency**: Provides clear and detailed payment schedules for borrowers.
+- **🛠️ Flexibility**: Supports both monthly and yearly payment schedules.
+- **🎯 Accuracy**: Ensures payments do not exceed the total repayment amount.
 
 ---
 
-### **Step 1: Create the Tables**
+### **Step 1: Create the Tables** 🗂️
 
 #### `Customers` Table
 Stores customer information.
@@ -196,7 +195,7 @@ CREATE TABLE Payments (
 
 ---
 
-### **Step 2: Insert Sample Data**
+### **Step 2: Insert Sample Data** 📥
 
 #### Insert Data into `Customers`
 ```sql
@@ -243,7 +242,7 @@ VALUES
 
 ---
 
-### **Step 3: Create Stored Procedures**
+### **Step 3: Create Stored Procedures** ⚙️
 
 #### 1. **RecordPayment**
 Records a payment and calculates dynamic late fees.
@@ -396,7 +395,7 @@ END;
 
 ---
 
-### **Step 4: Example Usage**
+### **Step 4: Example Usage** 🖥️
 
 #### Record a Payment
 ```sql
@@ -415,21 +414,25 @@ EXEC GetPaymentSchedule @LoanID = 1, @ScheduleType = 'Yearly';
 
 ---
 
-### **Step 5: Sample Outputs**
+### **Step 5: Sample Outputs** 📄
 
-#### Monthly Payment Schedule
+#### 📅 Monthly Payment Schedule
 | Period | PaymentDate | Principal  | Interest  | TotalPayment | RemainingBalance |
 |--------|-------------|------------|-----------|--------------|------------------|
 | 1      | 2023-01-01  | 500.00     | 781.25    | 1281.25      | 249500.00        |
 | 2      | 2023-02-01  | 502.34     | 778.91    | 1281.25      | 248997.66        |
 | 3      | 2023-03-01  | 504.69     | 776.56    | 1281.25      | 248492.97        |
 
-#### Yearly Payment Schedule
+#### 📅 Yearly Payment Schedule
 | Period | PaymentDate | Principal  | Interest  | TotalPayment | RemainingBalance |
 |--------|-------------|------------|-----------|--------------|------------------|
 | 1      | 2023-01-01  | 6000.00    | 9375.00   | 15375.00     | 244000.00        |
 | 2      | 2024-01-01  | 6200.00    | 9175.00   | 15375.00     | 237800.00        |
 | 3      | 2025-01-01  | 6400.00    | 8975.00   | 15375.00     | 231400.00        |
+
+---
+
+### **Scaffold Database Context** 🛠️
 
 ```sql
 dotnet ef dbcontext scaffold "Server=.;Database=LoanTracker;User Id=sa;Password=sasa@123;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -o AppDbContextModels -c AppDbContext -f
