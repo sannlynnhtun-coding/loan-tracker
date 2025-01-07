@@ -430,3 +430,7 @@ EXEC GetPaymentSchedule @LoanID = 1, @ScheduleType = 'Yearly';
 | 1      | 2023-01-01  | 6000.00    | 9375.00   | 15375.00     | 244000.00        |
 | 2      | 2024-01-01  | 6200.00    | 9175.00   | 15375.00     | 237800.00        |
 | 3      | 2025-01-01  | 6400.00    | 8975.00   | 15375.00     | 231400.00        |
+
+```sql
+dotnet ef dbcontext scaffold "Server=.;Database=LoanTracker;User Id=sa;Password=sasa@123;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer -o AppDbContextModels -c AppDbContext -f
+```

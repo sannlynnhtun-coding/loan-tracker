@@ -4,11 +4,17 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>68c5d230-b802-4b69-bcb0-a2a5f478a841</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.11" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LoanTracker.Database\LoanTracker.Database.csproj" />
+    <ProjectReference Include="..\LoanTracker.Domain\LoanTracker.Domain.csproj" />
   </ItemGroup>
 
 </Project>
