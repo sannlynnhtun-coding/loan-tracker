@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace LoanTracker.Database.Models;
 
-public class CustomerModel
+public class ResponseModel
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string Name { get; set; }
+    public bool IsSuccess { get; set; }
+    public string Message { get; set; }
+    public object Data { get; set; }
 }
