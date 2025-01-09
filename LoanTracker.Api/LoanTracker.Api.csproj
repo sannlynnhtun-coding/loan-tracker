@@ -22,4 +22,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LoanTracker.Database\LoanTracker.Database.csproj" />
+    <ProjectReference Include="..\LoanTracker.Domain\LoanTracker.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

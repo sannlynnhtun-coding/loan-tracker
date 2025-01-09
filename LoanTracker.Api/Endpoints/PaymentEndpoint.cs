@@ -1,13 +1,20 @@
-﻿namespace LoanTracker.Api.Endpoints;
-
-public static class PaymentEndpoint
+﻿namespace LoanTracker.Api.Endpoints
 {
-	public static IEndpointRouteBuilder UsePaymentEndpoint(this IEndpointRouteBuilder app)
-	{
+    public static class PaymentEndpoint
+    {
+        public static IEndpointRouteBuilder UsePaymentEndpoint(this IEndpointRouteBuilder app)
+        {
+            app.MapPost("/api/payment", async (CreatePaymentRequest request, PaymentService paymentService) =>
+            {
+                await paymentService.CreatePayment(request.Amount, request.PaymentDate, request.LoanId);
+                return Results.Ok();
+            })
+            .WithName("CreatePayment")
+            .WithOpenApi();
 
-		app.MapGet("/api/payment", async () => { })
-			.WithName("").WithOpenApi();
+            return app;
+        }
+    }
 
-		return app;
-	}
+
 }
