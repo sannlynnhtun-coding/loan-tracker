@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LoanTracker.Database.AppDbContext;
-using LoanTracker.Database.Models;
+﻿using LoanTracker.Database.AppDbContext;
+using LoanTracker.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LoanTracker.Domain;
@@ -18,7 +13,27 @@ public class CustomerService
         _db = new AppDbContext();
     }
 
-    public ResponseModel GetCustomerById(string id)
+	public async Task<ResponseModel> GetCustomers()
+	{
+		ResponseModel responseModel = new();
+
+		try
+		{
+			var customers = await _db.Customer.ToListAsync();
+            responseModel.IsSuccess = true;
+            responseModel.Message = "Successfully retrieved.";
+			responseModel.Data = customers;
+			return responseModel;
+		}
+		catch (Exception ex)
+		{
+			responseModel.IsSuccess = false;
+            responseModel.Message = ex.Message;
+            return responseModel;
+		}
+	}
+
+	public ResponseModel GetCustomerById(string id)
     {
         try
         {

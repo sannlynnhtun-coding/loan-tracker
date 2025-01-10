@@ -1,5 +1,5 @@
 ﻿using LoanTracker.Database.AppDbContext;
-using LoanTracker.Database.Models;
+using LoanTracker.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LoanTracker.Domain;
