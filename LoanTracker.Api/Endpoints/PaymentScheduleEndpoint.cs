@@ -16,6 +16,21 @@ public static class PaymentScheduleEndpoint
 			return Results.Ok(model);
         })
             .WithName("GetYearlyPaymentSchedule").WithOpenApi();
+
+
+
+
+
+        app.MapGet("/api/paymentschedule/monthly/{id}", (string loanId) =>
+        {
+            PaymentScheduleService paymentScheduleService = new PaymentScheduleService();
+            var model = paymentScheduleService.GetMonthlyPaymentSchedules(loanId);
+            return model != null ? Results.Ok(model) : Results.NotFound("Loan not found or invalid loan ID.");
+        })
+       .WithName("GetMonthlyPaymentSchedule")
+       .WithOpenApi();
         return app;
 	}
+
+
 }

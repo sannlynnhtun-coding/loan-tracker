@@ -53,4 +53,53 @@ public class PaymentScheduleService
         return yearlySchedule;
     }
 
+
+
+    #region monthly payment shedule
+
+    public List<MonthlyPaymentScheduleModel> GetMonthlyPaymentSchedules(string loanId)
+    {
+        var loan = context.LoanDetails.FirstOrDefault(x => x.Id == loanId);
+
+        if (loanId is null)
+        {
+            return null;
+        }
+
+        var payments = context.Payment.Where(x => x.LoanId == loanId).ToList();
+        var pymentsGroup = payments.GroupBy(x => new { x.PaymentDate.Month })
+            .Select(x => new
+            {
+                Month = x.Key.Month,
+                TotalPayment = x.Sum(x => x.AmountPaid),
+                TotalLateFees = x.Sum(x => x.LateFee)
+
+            }).ToList();
+
+        decimal remainingBalance = loan.TotalRepayment;
+        decimal monthlyInterestRate = (loan.InterestRate / 100) / 12;
+
+        List<MonthlyPaymentScheduleModel> monthlySchedule = new List<MonthlyPaymentScheduleModel>();
+
+        foreach (var group in pymentsGroup)
+        {
+            decimal interest = remainingBalance * monthlyInterestRate;
+            decimal principal = group.TotalPayment - interest;
+            remainingBalance -= principal;
+
+            monthlySchedule.Add(new MonthlyPaymentScheduleModel
+            {
+
+                Month = group.Month,
+                Principal = principal,
+                Interest = interest,
+                TotalPayment = group.TotalPayment,
+                RemainingBalance = remainingBalance
+            });
+        }
+
+        return monthlySchedule;
+    }
+    #endregion
+
 }
