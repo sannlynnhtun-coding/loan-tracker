@@ -22,4 +22,6 @@ app.UseCustomerEndpoint();
 
 app.UseLateFeeRuleEndpoint();
 
+app.UseMortgageLoanEndpoint();
+
 app.Run();

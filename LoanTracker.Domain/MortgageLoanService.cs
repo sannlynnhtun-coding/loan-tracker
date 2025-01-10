@@ -29,7 +29,7 @@ public class MortgageLoanService
             var totalMonths = requestModel.LoanTerm * 12;
             var monthlyPayment = principle * (decimal)(monthlyInterestRate * Math.Pow(1 + monthlyInterestRate, totalMonths)) /
                                      (decimal)(Math.Pow(1 + monthlyInterestRate, totalMonths) - 1);
-            var totalRepayment = principle + (principle * (requestModel.InterestRate / 100) * principle);
+            var totalRepayment = principle + (principle * (requestModel.InterestRate / 100) * requestModel.LoanTerm);
 
             var model = new MortgageLoanModel
             {

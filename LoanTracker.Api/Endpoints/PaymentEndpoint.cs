@@ -1,4 +1,7 @@
-﻿namespace LoanTracker.Api.Endpoints
+﻿using LoanTracker.Database.Models;
+using LoanTracker.Domain;
+
+namespace LoanTracker.Api.Endpoints
 {
     public static class PaymentEndpoint
     {
