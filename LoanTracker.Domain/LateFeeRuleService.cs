@@ -1,11 +1,7 @@
 ﻿using LoanTracker.Database.AppDbContext;
 using LoanTracker.Database.Models;
+using LoanTracker.Domain.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LoanTracker.Domain;
 
