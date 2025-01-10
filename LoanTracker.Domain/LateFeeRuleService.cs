@@ -45,4 +45,27 @@ public class LateFeeRuleService
         string message = result > 0 ? "Updating Successful." : "Updating Failed.";
         Console.WriteLine(message);
     }
+
+    public ResponseModel DeleteLateFeeById(string id)
+    {
+        var lateFeeRule = _context.LateFee.AsNoTracking().FirstOrDefault(x => x.Id == id);
+        if (lateFeeRule is null)
+        {
+            return new ResponseModel()
+            {
+                IsSuccess = false,
+                Message = "No data Found"
+            };
+        }
+        _context.Entry(lateFeeRule).State = EntityState.Deleted;
+        var result = _context.SaveChanges();
+        string message = result > 0 ? "Deleting late fee rule successful." : " Deleting late fee rule Failed.";
+        ResponseModel responseModel = new ResponseModel();
+        responseModel.IsSuccess = result > 0;
+        responseModel.Message = message;
+        responseModel.Data = lateFeeRule;
+        return responseModel;
+
+    }
+
 }
