@@ -1,4 +1,5 @@
 ﻿using LoanTracker.Database.AppDbContext;
+using LoanTracker.Database.Models;
 using LoanTracker.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,27 +14,27 @@ public class CustomerService
         _db = new AppDbContext();
     }
 
-	public async Task<ResponseModel> GetCustomers()
-	{
-		ResponseModel responseModel = new();
+    public async Task<ResponseModel> GetCustomers()
+    {
+        ResponseModel responseModel = new();
 
-		try
-		{
-			var customers = await _db.Customer.ToListAsync();
+        try
+        {
+            var customers = await _db.Customer.ToListAsync();
             responseModel.IsSuccess = true;
             responseModel.Message = "Successfully retrieved.";
-			responseModel.Data = customers;
-			return responseModel;
-		}
-		catch (Exception ex)
-		{
-			responseModel.IsSuccess = false;
+            responseModel.Data = customers;
+            return responseModel;
+        }
+        catch (Exception ex)
+        {
+            responseModel.IsSuccess = false;
             responseModel.Message = ex.Message;
             return responseModel;
-		}
-	}
+        }
+    }
 
-	public ResponseModel GetCustomerById(string id)
+    public ResponseModel GetCustomerById(string id)
     {
         try
         {
@@ -45,9 +46,30 @@ public class CustomerService
 
             return new ResponseModel { IsSuccess = true, Message = "Success", Data = customer };
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             throw new Exception(ex.Message.ToString());
         }
+    }
+
+    public ResponseModel CreateCustomer(CustomerModel requestModel)
+    {
+        try
+        {
+            _db.Customer.Add(requestModel);
+            int result = _db.SaveChanges();
+            var message = result > 0 ? "Saving Customer Successful " : "Saving Customer Failed";
+            ResponseModel model = new ResponseModel();
+            model.IsSuccess = result > 0;
+            model.Message = message;
+
+            return model;
+
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(ex.Message.ToString());
+        }
+
     }
 }

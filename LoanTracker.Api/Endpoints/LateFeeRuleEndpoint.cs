@@ -16,13 +16,23 @@ namespace LoanTracker.Api.Endpoints
             .WithName("UpdateLateFeeRule")
             .WithOpenApi();
 
-           app.MapPost("/api/latefeerule", (LateFeeRuleModel lateFeeRule) =>
+            app.MapPost("/api/latefeerule", (LateFeeRuleModel lateFeeRule) =>
+             {
+                 var model = lateFeeService.CreateLateFee(lateFeeRule);
+                 return Results.Ok(model);
+             })
+              .WithName("CreateLateFeeRule")
+             .WithOpenApi();
+
+
+            app.MapDelete("/api/latefeerule/{id}", (string id) =>
             {
-                var model = lateFeeService.CreateLateFee(lateFeeRule);
+                var model = lateFeeService.DeleteLateFeeById(id);
                 return Results.Ok(model);
             })
-             .WithName("CreateLateFeeRule")
-            .WithOpenApi();
+           .WithName("DeleteLateFeeRule")
+          .WithOpenApi();
+
             return app;
         }
     }
