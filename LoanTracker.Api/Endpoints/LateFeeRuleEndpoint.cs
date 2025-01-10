@@ -33,7 +33,17 @@ namespace LoanTracker.Api.Endpoints
            .WithName("DeleteLateFeeRule")
           .WithOpenApi();
 
-            return app;
+			app.MapGet("/api/latefeerule/", async () =>
+			{
+				LateFeeRuleService lateFeeRuleService = new();
+				var responseModel = await lateFeeRuleService.GetLateFeeRules();
+				if (!responseModel.IsSuccess) return Results.Json(responseModel, statusCode: 500);
+				return Results.Ok(responseModel);
+			})
+            .WithName("GetLateFeeRules")
+            .WithOpenApi();
+
+			return app;
         }
     }
 

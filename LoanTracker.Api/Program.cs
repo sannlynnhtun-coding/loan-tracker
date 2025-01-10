@@ -20,4 +20,6 @@ app.UseHttpsRedirection();
 
 app.UseCustomerEndpoint();
 
+app.UseLateFeeRuleEndpoint();
+
 app.Run();
