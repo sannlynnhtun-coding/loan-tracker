@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using loan_tracker.Database.Models;
 using LoanTracker.Database.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
