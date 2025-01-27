@@ -1,4 +1,4 @@
-﻿namespace LoanTracker.Domain;
+﻿namespace LoanTracker.Domain.Models;
 
 // PaymentSchedule DTO for generating payment schedules
 public class PaymentSchedule

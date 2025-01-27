@@ -1,23 +1,11 @@
-﻿using LoanTracker.Database.AppDbContextModels;
-using Microsoft.EntityFrameworkCore;
+﻿namespace LoanTracker.Domain.Features;
 
-namespace LoanTracker.Domain;
-
-public class PaymentService
+public class PaymentService(AppDbContext dbContext, LateFeeRuleService lateFeeRuleService)
 {
-    private readonly AppDbContext _dbContext;
-    private readonly LateFeeRuleService _lateFeeRuleService;
-
-    public PaymentService(AppDbContext dbContext, LateFeeRuleService lateFeeRuleService)
-    {
-        _dbContext = dbContext;
-        _lateFeeRuleService = lateFeeRuleService;
-    }
-
     // Get all payments for a loan
     public async Task<Result<List<Payment>>> GetPaymentsByLoanIdAsync(int loanId)
     {
-        var payments = await _dbContext.Payments
+        var payments = await dbContext.Payments
             .Where(p => p.LoanId == loanId)
             .ToListAsync();
 
@@ -27,7 +15,7 @@ public class PaymentService
     // Record a payment
     public async Task<Result<Payment>> RecordPaymentAsync(int loanId, DateOnly paymentDate, decimal amountPaid)
     {
-        var loan = await _dbContext.MortgageLoans.FindAsync(loanId);
+        var loan = await dbContext.MortgageLoans.FindAsync(loanId);
         if (loan == null)
             return Result<Payment>.NotFoundError("Loan not found.");
 
@@ -35,7 +23,7 @@ public class PaymentService
         var lateFee = await CalculateLateFeeAsync(loanId, paymentDate);
 
         // Check if the payment exceeds the remaining repayment amount
-        var totalPaid = await _dbContext.Payments
+        var totalPaid = await dbContext.Payments
             .Where(p => p.LoanId == loanId)
             .SumAsync(p => p.AmountPaid);
 
@@ -51,8 +39,8 @@ public class PaymentService
             LateFee = lateFee
         };
 
-        _dbContext.Payments.Add(payment);
-        await _dbContext.SaveChangesAsync();
+        dbContext.Payments.Add(payment);
+        await dbContext.SaveChangesAsync();
 
         // Check if the loan is fully repaid
         if (totalPaid + amountPaid == loan.TotalRepayment)
@@ -64,7 +52,7 @@ public class PaymentService
     // Generate payment schedule
     public async Task<Result<List<PaymentSchedule>>> GeneratePaymentScheduleAsync(int loanId, string scheduleType)
     {
-        var loan = await _dbContext.MortgageLoans.FindAsync(loanId);
+        var loan = await dbContext.MortgageLoans.FindAsync(loanId);
         if (loan == null)
             return Result<List<PaymentSchedule>>.NotFoundError("Loan not found.");
 
@@ -99,7 +87,7 @@ public class PaymentService
     // Helper method to calculate late fee
     private async Task<decimal> CalculateLateFeeAsync(int loanId, DateOnly paymentDate)
     {
-        var loan = await _dbContext.MortgageLoans.FindAsync(loanId);
+        var loan = await dbContext.MortgageLoans.FindAsync(loanId);
         if (loan == null)
             return 0;
 
@@ -109,7 +97,7 @@ public class PaymentService
         if (daysOverdue <= 0)
             return 0;
 
-        var lateFeeRules = await _lateFeeRuleService.GetAllLateFeeRuleAsync();
+        var lateFeeRules = await lateFeeRuleService.GetAllLateFeeRuleAsync();
         if (!lateFeeRules.IsSuccess)
             return 0;
 

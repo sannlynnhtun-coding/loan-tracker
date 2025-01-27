@@ -1,5 +1,6 @@
 using LoanTracker.Database.AppDbContextModels;
 using LoanTracker.Domain;
+using LoanTracker.Domain.Features;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -66,33 +67,33 @@ app.MapDelete("/customers/{id}", async (int id, CustomerService customerService)
 
 #region CRUD Endpoints for LateFeeRules
 
-app.MapGet("/latefeerules", async (LateFeeRuleService LateFeeRuleService) =>
+app.MapGet("/latefeerules", async (LateFeeRuleService lateFeeRuleService) =>
 {
-    var result = await LateFeeRuleService.GetAllLateFeeRuleAsync();
+    var result = await lateFeeRuleService.GetAllLateFeeRuleAsync();
     return result.Execute();
 });
 
-app.MapGet("/latefeerules/{id}", async (int id, LateFeeRuleService LateFeeRuleService) =>
+app.MapGet("/latefeerules/{id}", async (int id, LateFeeRuleService lateFeeRuleService) =>
 {
-    var result = await LateFeeRuleService.GetLateFeeRuleByIdAsync(id);
+    var result = await lateFeeRuleService.GetLateFeeRuleByIdAsync(id);
     return result.Execute();
 });
 
-app.MapPost("/latefeerules", async (LateFeeRule rule, LateFeeRuleService LateFeeRuleService) =>
+app.MapPost("/latefeerules", async (LateFeeRule rule, LateFeeRuleService lateFeeRuleService) =>
 {
-    var result = await LateFeeRuleService.CreateLateFeeRuleAsync(rule);
+    var result = await lateFeeRuleService.CreateLateFeeRuleAsync(rule);
     return result.Execute();
 });
 
-app.MapPut("/latefeerules/{id}", async (int id, LateFeeRule updatedRule, LateFeeRuleService LateFeeRuleService) =>
+app.MapPut("/latefeerules/{id}", async (int id, LateFeeRule updatedRule, LateFeeRuleService lateFeeRuleService) =>
 {
-    var result = await LateFeeRuleService.UpdateLateFeeRuleAsync(id, updatedRule);
+    var result = await lateFeeRuleService.UpdateLateFeeRuleAsync(id, updatedRule);
     return result.Execute();
 });
 
-app.MapDelete("/latefeerules/{id}", async (int id, LateFeeRuleService LateFeeRuleService) =>
+app.MapDelete("/latefeerules/{id}", async (int id, LateFeeRuleService lateFeeRuleService) =>
 {
-    var result = await LateFeeRuleService.DeleteLateFeeRuleAsync(id);
+    var result = await lateFeeRuleService.DeleteLateFeeRuleAsync(id);
     return result.Execute();
 });
 

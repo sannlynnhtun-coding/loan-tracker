@@ -1,28 +1,18 @@
-﻿using LoanTracker.Database.AppDbContextModels;
-using Microsoft.EntityFrameworkCore;
+﻿namespace LoanTracker.Domain.Features;
 
-namespace LoanTracker.Domain;
-
-public class MortgageLoanService
+public class MortgageLoanService(AppDbContext dbContext)
 {
-    private readonly AppDbContext _dbContext;
-
-    public MortgageLoanService(AppDbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
     // Get all mortgage loans
     public async Task<Result<List<MortgageLoan>>> GetAllMortgageLoansAsync()
     {
-        var loans = await _dbContext.MortgageLoans.ToListAsync();
+        var loans = await dbContext.MortgageLoans.ToListAsync();
         return Result<List<MortgageLoan>>.Success(loans);
     }
 
     // Get mortgage loan by ID
     public async Task<Result<MortgageLoan>> GetMortgageLoanByIdAsync(int id)
     {
-        var loan = await _dbContext.MortgageLoans.FindAsync(id);
+        var loan = await dbContext.MortgageLoans.FindAsync(id);
         if (loan == null)
             return Result<MortgageLoan>.NotFoundError();
 
@@ -41,8 +31,8 @@ public class MortgageLoanService
         loan.TotalRepayment = loan.MonthlyPayment * loan.LoanTerm;
 
         // Add loan to the database
-        _dbContext.MortgageLoans.Add(loan);
-        await _dbContext.SaveChangesAsync();
+        dbContext.MortgageLoans.Add(loan);
+        await dbContext.SaveChangesAsync();
 
         return Result<MortgageLoan>.Success(loan);
     }
@@ -50,7 +40,7 @@ public class MortgageLoanService
     // Update an existing mortgage loan
     public async Task<Result<MortgageLoan>> UpdateMortgageLoanAsync(int id, MortgageLoan updatedLoan)
     {
-        var loan = await _dbContext.MortgageLoans.FindAsync(id);
+        var loan = await dbContext.MortgageLoans.FindAsync(id);
         if (loan == null)
             return Result<MortgageLoan>.NotFoundError();
 
@@ -69,7 +59,7 @@ public class MortgageLoanService
         loan.MonthlyPayment = CalculateMonthlyPayment(loan.LoanAmount, loan.InterestRate, loan.LoanTerm);
         loan.TotalRepayment = loan.MonthlyPayment * loan.LoanTerm;
 
-        await _dbContext.SaveChangesAsync();
+        await dbContext.SaveChangesAsync();
 
         return Result<MortgageLoan>.Success(loan);
     }
@@ -77,12 +67,12 @@ public class MortgageLoanService
     // Delete a mortgage loan
     public async Task<Result<MortgageLoan>> DeleteMortgageLoanAsync(int id)
     {
-        var loan = await _dbContext.MortgageLoans.FindAsync(id);
+        var loan = await dbContext.MortgageLoans.FindAsync(id);
         if (loan == null)
             return Result<MortgageLoan>.NotFoundError();
 
-        _dbContext.MortgageLoans.Remove(loan);
-        await _dbContext.SaveChangesAsync();
+        dbContext.MortgageLoans.Remove(loan);
+        await dbContext.SaveChangesAsync();
 
         return Result<MortgageLoan>.Success(loan, "Mortgage loan deleted successfully.");
     }

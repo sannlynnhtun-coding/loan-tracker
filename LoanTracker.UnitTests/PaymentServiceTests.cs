@@ -5,6 +5,7 @@ using LoanTracker.Domain;
 using System.Threading;
 using Xunit;
 using System.Linq.Expressions;
+using LoanTracker.Domain.Features;
 
 namespace LoanTracker.UnitTests;
 

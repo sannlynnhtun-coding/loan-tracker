@@ -2,6 +2,7 @@
 using Moq;
 using LoanTracker.Database.AppDbContextModels;
 using LoanTracker.Domain;
+using LoanTracker.Domain.Features;
 
 namespace LoanTracker.UnitTests;
 
