@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace LoanTracker.Database.AppDbContextModels;
 
-public partial class Payment
+public partial class TblCustomerPayment
 {
     public int PaymentId { get; set; }
 
-    public int LoanId { get; set; }
+    public int ScheduleId { get; set; }
 
     public DateOnly PaymentDate { get; set; }
 
@@ -15,5 +15,7 @@ public partial class Payment
 
     public decimal? LateFee { get; set; }
 
-    public virtual MortgageLoan Loan { get; set; } = null!;
+    public string? Status { get; set; }
+
+    public virtual TblPaymentSchedule Schedule { get; set; } = null!;
 }
