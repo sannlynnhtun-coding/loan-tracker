@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-
-namespace LoanTracker.Domain.Models;
+﻿namespace LoanTracker.Domain.Models;
 
 public class Result<T>
 {

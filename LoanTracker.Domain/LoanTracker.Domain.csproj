@@ -8,6 +8,7 @@
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
 		<ProjectReference Include="..\LoanTracker.Database\LoanTracker.Database.csproj" />
+		<ProjectReference Include="..\LoanTracker.Shared\LoanTracker.Shared.csproj" />
 	</ItemGroup>
 
 </Project>
