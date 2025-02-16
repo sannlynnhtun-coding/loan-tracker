@@ -11,6 +11,8 @@ public partial class TblCustomerLoan
 
     public int LoanTypeId { get; set; }
 
+    public decimal TotalAmount { get; set; }
+
     public decimal PrincipalAmount { get; set; }
 
     public decimal InterestRate { get; set; }

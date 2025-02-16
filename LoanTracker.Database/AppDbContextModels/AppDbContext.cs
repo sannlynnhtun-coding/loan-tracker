@@ -75,6 +75,7 @@ public partial class AppDbContext : DbContext
             entity.Property(e => e.Status)
                 .HasMaxLength(20)
                 .IsUnicode(false);
+            entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
 
             entity.HasOne(d => d.Customer).WithMany(p => p.TblCustomerLoans)
                 .HasForeignKey(d => d.CustomerId)
