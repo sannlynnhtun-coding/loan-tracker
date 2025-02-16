@@ -1,15 +1,14 @@
-﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-
-namespace LoanTracker.Domain;
+﻿namespace LoanTracker.Domain;
 
 public static class FeatureManager
 {
     public static void AddDomain(this WebApplicationBuilder builder)
     {
-        builder.Services.AddScoped<CreateCustomerService>();
-        builder.Services.AddScoped<GetCustomerService>();
-        builder.Services.AddScoped<UpdateCustomerService>();
-        builder.Services.AddScoped<DeleteCustomerService>();
+        builder.Services.AddScoped<CustomerService>();
+        builder.Services.AddScoped<CustomerLoanService>();
+        builder.Services.AddScoped<CustomerPaymentService>();
+        builder.Services.AddScoped<LateFeeService>();
+        builder.Services.AddScoped<LoanTypeService>();
+        builder.Services.AddScoped<PaymentScheduleService>();
     }
 }

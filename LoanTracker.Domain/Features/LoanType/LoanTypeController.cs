@@ -1,53 +1,55 @@
-﻿using LoanTracker.Domain.Features.LoanType;
+﻿namespace LoanTracker.Application.Services;
 
 [ApiController]
 [Route("api/[controller]")]
 public class LoanTypeController : ControllerBase
 {
-    private readonly CreateLoanTypeService _createLoanTypeService;
-    private readonly GetLoanTypeService _getLoanTypeService;
-    private readonly UpdateLoanTypeService _updateLoanTypeService;
-    private readonly DeleteLoanTypeService _deleteLoanTypeService;
+    private readonly LoanTypeService _loanTypeService;
 
-    public LoanTypeController(
-        CreateLoanTypeService createLoanTypeService,
-        GetLoanTypeService getLoanTypeService,
-        UpdateLoanTypeService updateLoanTypeService,
-        DeleteLoanTypeService deleteLoanTypeService)
+    public LoanTypeController(LoanTypeService loanTypeService)
     {
-        _createLoanTypeService = createLoanTypeService;
-        _getLoanTypeService = getLoanTypeService;
-        _updateLoanTypeService = updateLoanTypeService;
-        _deleteLoanTypeService = deleteLoanTypeService;
+        _loanTypeService = loanTypeService;
     }
 
     [HttpPost]
-    public async Task<IResult> CreateLoanType(CreateLoanTypeRequest request)
+    public async Task<IResult> AddLoanType([FromBody] AddLoanTypeRequest request)
     {
-        var result = await _createLoanTypeService.HandleAsync(request);
+        var result = await _loanTypeService.AddLoanTypeAsync(request.LoanType, request.BurmeseLoanType);
         return result.Execute();
     }
 
     [HttpGet("{id}")]
     public async Task<IResult> GetLoanType(int id)
     {
-        var request = new GetLoanTypeRequest { LoanTypeId = id };
-        var result = await _getLoanTypeService.HandleAsync(request);
+        var result = await _loanTypeService.GetLoanTypeByIdAsync(id);
+        return result.Execute();
+    }
+
+    [HttpGet]
+    public async Task<IResult> GetAllLoanTypes()
+    {
+        var result = await _loanTypeService.GetAllLoanTypesAsync();
         return result.Execute();
     }
 
     [HttpPut("{id}")]
-    public async Task<IResult> UpdateLoanType(int id, UpdateLoanTypeRequest request)
+    public async Task<IResult> UpdateLoanType(int id, [FromBody] TblLoanType loanType)
     {
-        var result = await _updateLoanTypeService.HandleAsync(id, request);
+        loanType.LoanTypeId = id;
+        var result = await _loanTypeService.UpdateLoanTypeAsync(loanType);
         return result.Execute();
     }
 
     [HttpDelete("{id}")]
     public async Task<IResult> DeleteLoanType(int id)
     {
-        var request = new DeleteLoanTypeRequest { LoanTypeId = id };
-        var result = await _deleteLoanTypeService.HandleAsync(request);
+        var result = await _loanTypeService.DeleteLoanTypeAsync(id);
         return result.Execute();
     }
+}
+
+public class AddLoanTypeRequest
+{
+    public TblLoanType LoanType { get; set; }
+    public TblLoanTypeBurmese BurmeseLoanType { get; set; }
 }

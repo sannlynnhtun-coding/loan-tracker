@@ -1,53 +1,49 @@
-﻿namespace LoanTracker.Domain.Features.Customer;
+﻿namespace LoanTracker.Application.Services;
 
 [ApiController]
 [Route("api/[controller]")]
 public class CustomerController : ControllerBase
 {
-    private readonly CreateCustomerService _createCustomerService;
-    private readonly GetCustomerService _getCustomerService;
-    private readonly UpdateCustomerService _updateCustomerService;
-    private readonly DeleteCustomerService _deleteCustomerService;
+    private readonly CustomerService _customerService;
 
-    public CustomerController(
-        CreateCustomerService createCustomerService,
-        GetCustomerService getCustomerService,
-        UpdateCustomerService updateCustomerService,
-        DeleteCustomerService deleteCustomerService)
+    public CustomerController(CustomerService customerService)
     {
-        _createCustomerService = createCustomerService;
-        _getCustomerService = getCustomerService;
-        _updateCustomerService = updateCustomerService;
-        _deleteCustomerService = deleteCustomerService;
+        _customerService = customerService;
     }
 
     [HttpPost]
-    public async Task<IResult> CreateCustomer(CreateCustomerRequest request)
+    public async Task<IResult> AddCustomer([FromBody] TblCustomer customer)
     {
-        var result = await _createCustomerService.HandleAsync(request);
+        var result = await _customerService.AddCustomerAsync(customer);
         return result.Execute();
     }
 
     [HttpGet("{id}")]
     public async Task<IResult> GetCustomer(int id)
     {
-        var request = new GetCustomerRequest { CustomerId = id };
-        var result = await _getCustomerService.HandleAsync(request);
+        var result = await _customerService.GetCustomerByIdAsync(id);
         return result.Execute();
     }
 
-    [HttpPut]
-    public async Task<IResult> UpdateCustomer(UpdateCustomerRequest request)
+    [HttpGet]
+    public async Task<IResult> GetAllCustomers()
     {
-        var result = await _updateCustomerService.HandleAsync(request);
+        var result = await _customerService.GetAllCustomersAsync();
+        return result.Execute();
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IResult> UpdateCustomer(int id, [FromBody] TblCustomer customer)
+    {
+        customer.CustomerId = id;
+        var result = await _customerService.UpdateCustomerAsync(customer);
         return result.Execute();
     }
 
     [HttpDelete("{id}")]
     public async Task<IResult> DeleteCustomer(int id)
     {
-        var request = new DeleteCustomerRequest { CustomerId = id };
-        var result = await _deleteCustomerService.HandleAsync(request);
+        var result = await _customerService.DeleteCustomerAsync(id);
         return result.Execute();
     }
 }
