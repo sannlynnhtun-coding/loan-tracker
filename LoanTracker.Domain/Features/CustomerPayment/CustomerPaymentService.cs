@@ -11,7 +11,10 @@ public class CustomerPaymentService
 
     public async Task<Result<TblCustomerPayment>> AddPaymentAsync(TblCustomerPayment payment)
     {
-        var schedule = await _context.TblPaymentSchedules.FindAsync(payment.ScheduleId);
+        var schedule = await _context.TblPaymentSchedules
+            .Include(ps => ps.Loan) 
+            .FirstOrDefaultAsync(ps => ps.ScheduleId == payment.ScheduleId);
+
         if (schedule == null)
             return Result<TblCustomerPayment>.NotFoundError("Payment schedule not found.");
 
@@ -20,8 +23,20 @@ public class CustomerPaymentService
         if (payment.PaymentDate > DateOnly.FromDateTime(dueDateAsDateTime))
         {
             payment.Status = "Late";
+
             int overdueDays = (Convert.ToDateTime(payment.PaymentDate) - dueDateAsDateTime).Days;
-            payment.LateFee = overdueDays * 0.01m * schedule.InstallmentAmount; // 1% per day
+            decimal lateFeeAmount = overdueDays * 0.01m * schedule.InstallmentAmount; // 1% per day
+
+            payment.LateFee = lateFeeAmount;
+
+            var lateFee = new TblLateFee
+            {
+                ScheduleId = payment.ScheduleId,
+                OverdueDays = overdueDays,
+                LateFeeAmount = lateFeeAmount
+            };
+
+            _context.TblLateFees.Add(lateFee);
         }
         else
         {
@@ -30,6 +45,7 @@ public class CustomerPaymentService
 
         _context.TblCustomerPayments.Add(payment);
         await _context.SaveChangesAsync();
+
         return Result<TblCustomerPayment>.Success(payment, "Payment added successfully.");
     }
 
