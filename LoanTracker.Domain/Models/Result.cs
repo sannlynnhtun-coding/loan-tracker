@@ -45,7 +45,6 @@ public class Result<T>
         return item;
     }
 
-    // Execute method to handle the result
     public IResult Execute()
     {
         if (this.IsValidationError)
@@ -55,7 +54,7 @@ public class Result<T>
             return Results.NotFound(this);
 
         if (this.IsError)
-            return Results.StatusCode(500); // Internal Server Error
+            return Results.StatusCode(500);
 
         return Results.Ok(this);
     }
