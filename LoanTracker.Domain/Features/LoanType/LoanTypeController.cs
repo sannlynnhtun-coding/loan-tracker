@@ -14,7 +14,7 @@ public class LoanTypeController : ControllerBase
     [HttpPost]
     public async Task<IResult> AddLoanType([FromBody] AddLoanTypeRequest request)
     {
-        var result = await _loanTypeService.AddLoanTypeAsync(request.LoanType, request.BurmeseLoanType);
+        var result = await _loanTypeService.AddLoanTypeAsync(request.LoanType!, request.BurmeseLoanType!);
         return result.Execute();
     }
 
@@ -50,6 +50,6 @@ public class LoanTypeController : ControllerBase
 
 public class AddLoanTypeRequest
 {
-    public TblLoanType LoanType { get; set; }
-    public TblLoanTypeBurmese BurmeseLoanType { get; set; }
+    public TblLoanType? LoanType { get; set; }
+    public TblLoanTypeBurmese? BurmeseLoanType { get; set; }
 }
