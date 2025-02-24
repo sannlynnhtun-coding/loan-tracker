@@ -9,8 +9,6 @@ global using LoanTracker.Application.Services;
 global using LoanTracker.Database.AppDbContextModels;
 global using LoanTracker.Domain.Features.CustomerLoan;
 global using LoanTracker.Domain.Features.CustomerPayment;
-global using LoanTracker.Domain.Features.LateFee;
-global using LoanTracker.Domain.Features.PaymentSchedule;
 global using LoanTracker.Domain.Models;
 global using LoanTracker.Shared;
 global using Microsoft.AspNetCore.Builder;
