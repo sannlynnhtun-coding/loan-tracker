@@ -14,8 +14,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoanTracker.Database", "Loa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoanTracker.Domain", "LoanTracker.Domain\LoanTracker.Domain.csproj", "{73ADFC42-892E-41AC-9039-9360E1286E59}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoanTracker.UnitTests", "LoanTracker.UnitTests\LoanTracker.UnitTests.csproj", "{2F05AF0E-F2B2-4E6D-8BF5-071E3CE9B54A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoanTracker.Shared", "LoanTracker.Shared\LoanTracker.Shared.csproj", "{4BE40B3F-9417-46B5-8A04-3B6242EE1164}"
 EndProject
 Global
@@ -36,10 +34,6 @@ Global
 		{73ADFC42-892E-41AC-9039-9360E1286E59}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{73ADFC42-892E-41AC-9039-9360E1286E59}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{73ADFC42-892E-41AC-9039-9360E1286E59}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2F05AF0E-F2B2-4E6D-8BF5-071E3CE9B54A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2F05AF0E-F2B2-4E6D-8BF5-071E3CE9B54A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2F05AF0E-F2B2-4E6D-8BF5-071E3CE9B54A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2F05AF0E-F2B2-4E6D-8BF5-071E3CE9B54A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4BE40B3F-9417-46B5-8A04-3B6242EE1164}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4BE40B3F-9417-46B5-8A04-3B6242EE1164}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4BE40B3F-9417-46B5-8A04-3B6242EE1164}.Release|Any CPU.ActiveCfg = Release|Any CPU
