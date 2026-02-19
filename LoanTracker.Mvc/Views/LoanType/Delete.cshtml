@@ -1,0 +1,45 @@
+@model LoanTypeResponse
+
+@{
+    ViewData["Title"] = "Retire Product";
+    ViewData["PageHeader"] = "Product Retirement";
+}
+
+<div class="max-w-2xl mx-auto">
+    <div class="mb-8 flex items-center justify-between">
+        <a asp-action="Index" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-primary-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Loan Types
+        </a>
+    </div>
+
+    <div class="bg-white rounded-[2.5rem] border border-rose-100 shadow-2xl overflow-hidden">
+        <div class="p-10 text-center">
+             <div class="w-24 h-24 bg-rose-50 text-rose-600 rounded-[2rem] flex items-center justify-center mx-auto mb-8 shadow-inner">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+            </div>
+            
+            <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Retire Loan Product?</h1>
+            <p class="text-slate-500 mt-4 max-w-sm mx-auto leading-relaxed">
+                You are about to remove <span class="text-rose-600 font-bold italic">@Model.LoanTypeName</span> from the portfolio. Existing loans of this type will be maintained, but no new ones can be issued.
+            </p>
+
+            <form asp-action="Delete" class="mt-12 flex flex-col sm:flex-row items-center justify-center space-y-3 sm:space-y-0 sm:space-x-4">
+                <input type="hidden" asp-for="LoanTypeId" />
+                <a asp-action="Index" class="w-full sm:w-auto px-8 py-3 font-semibold text-slate-600 hover:bg-slate-50 rounded-2xl transition-all border border-slate-200">
+                    Keep Product
+                </a>
+                <button type="submit" class="w-full sm:w-auto px-10 py-4 bg-slate-900 hover:bg-black text-white font-bold rounded-2xl shadow-xl transition-all active:scale-95">
+                    Confirm Retirement
+                </button>
+            </form>
+        </div>
+        <div class="bg-slate-50 p-6 text-xs text-slate-400 text-center border-t border-slate-100 italic">
+            Trace ID: @Guid.NewGuid().ToString().ToUpper().Substring(0, 8) | System Integrity Check Passed
+        </div>
+    </div>
+</div>

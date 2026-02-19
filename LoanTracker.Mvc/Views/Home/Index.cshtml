@@ -1,0 +1,158 @@
+﻿@model DashboardResponse
+
+@{
+    ViewData["Title"] = "Dashboard";
+    ViewData["PageHeader"] = "Analytics Overview";
+}
+
+<div class="mb-10">
+    <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">System <span class="text-primary-600">Dashboard</span></h1>
+    <p class="text-slate-500 mt-2 text-lg">Welcome back! Here's what's happening with the loan portfolio today.</p>
+</div>
+
+<!-- Key Metrics Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+    <!-- Total Portfolio -->
+    <div class="bg-gradient-to-br from-primary-600 to-primary-700 p-8 rounded-[2.5rem] text-white shadow-xl shadow-primary-200 relative overflow-hidden group">
+        <div class="relative z-10">
+            <p class="text-primary-100 font-medium tracking-wide uppercase text-xs">Total Portfolio</p>
+            <h3 class="text-3xl font-bold mt-2">@Model.TotalPortfolio.ToString("N0")</h3>
+            <div class="mt-4 flex items-center text-xs font-bold bg-white/20 w-fit px-2 py-1 rounded-full">
+                Live Portfolio Value
+            </div>
+        </div>
+        <div class="absolute -right-4 -bottom-4 w-32 h-32 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+    </div>
+
+    <!-- Active Loans -->
+    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden group">
+        <div class="relative z-10">
+            <p class="text-slate-500 font-medium tracking-wide uppercase text-xs">Active Loans</p>
+            <h3 class="text-3xl font-bold mt-2 text-slate-900">@Model.ActiveLoansCount</h3>
+            <div class="mt-4 flex items-center text-xs font-bold text-emerald-600">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-2 animate-pulse"></span>
+                System Healthy
+            </div>
+        </div>
+        <div class="absolute right-6 top-6 text-slate-100 group-hover:text-primary-50 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Late Payments -->
+    <div class="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden group">
+        <div class="relative z-10">
+            <p class="text-slate-500 font-medium tracking-wide uppercase text-xs">Late Payments</p>
+            <h3 class="text-3xl font-bold mt-2 text-rose-500">@Model.LatePaymentsCount</h3>
+            <div class="mt-4 flex items-center text-xs font-bold text-slate-400">
+                Action required soon
+            </div>
+        </div>
+        <div class="absolute right-6 top-6 text-rose-50 group-hover:text-rose-100 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- New Requests -->
+    <div class="bg-slate-900 p-8 rounded-[2.5rem] text-white shadow-xl relative overflow-hidden group">
+        <div class="relative z-10">
+            <p class="text-slate-400 font-medium tracking-wide uppercase text-xs">New Requests Today</p>
+            <h3 class="text-3xl font-bold mt-2">@Model.NewRequestsCount</h3>
+            <div class="mt-4 flex items-center text-xs font-bold text-amber-400">
+                Recently added
+            </div>
+        </div>
+        <div class="absolute right-6 top-6 text-white/5 group-hover:text-white/10 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions Grid -->
+<div class="mb-12">
+    <h2 class="text-xl font-bold text-slate-800 mb-6">Quick Actions</h2>
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <a asp-controller="Customer" asp-action="Create" class="flex flex-col items-center justify-center p-6 bg-white border border-slate-200 rounded-3xl hover:border-primary-500 hover:shadow-xl hover:shadow-primary-100 transition-all group scale-100 active:scale-95">
+            <div class="w-12 h-12 rounded-2xl bg-primary-50 text-primary-600 flex items-center justify-center mb-4 group-hover:bg-primary-600 group-hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                </svg>
+            </div>
+            <span class="text-sm font-bold text-slate-700">Add Customer</span>
+        </a>
+        
+        <a asp-controller="CustomerLoan" asp-action="Create" class="flex flex-col items-center justify-center p-6 bg-white border border-slate-200 rounded-3xl hover:border-primary-500 hover:shadow-xl hover:shadow-primary-100 transition-all group scale-100 active:scale-95">
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mb-4 group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+            </div>
+            <span class="text-sm font-bold text-slate-700">Issue Loan</span>
+        </a>
+
+        <a asp-controller="CustomerPayment" asp-action="Create" class="flex flex-col items-center justify-center p-6 bg-white border border-slate-200 rounded-3xl hover:border-primary-500 hover:shadow-xl hover:shadow-primary-100 transition-all group scale-100 active:scale-95">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <span class="text-sm font-bold text-slate-700">Post Payment</span>
+        </a>
+
+        <a asp-controller="LoanType" asp-action="Index" class="flex flex-col items-center justify-center p-6 bg-white border border-slate-200 rounded-3xl hover:border-primary-500 hover:shadow-xl hover:shadow-primary-100 transition-all group scale-100 active:scale-95">
+            <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center mb-4 group-hover:bg-rose-600 group-hover:text-white transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 11h.01M7 15h.01M11 7h.01M11 11h.01M11 15h.01M15 7h.01M15 11h.01M15 15h.01M19 7h.01M19 11h.01M19 15h.01M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+            </div>
+            <span class="text-sm font-bold text-slate-700">Loan Products</span>
+        </a>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+@if (Model.RecentActivities != null && Model.RecentActivities.Any())
+{
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-8 border-b border-slate-100 flex items-center justify-between">
+            <h2 class="text-xl font-bold text-slate-800">Recent System Activity</h2>
+        </div>
+        <div class="p-8">
+            <div class="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 before:to-transparent">
+                @foreach (var activity in Model.RecentActivities)
+                {
+                    <div class="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                        <div class="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-100 text-slate-400 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors group-hover:bg-primary-600 group-hover:text-white">
+                            @if (activity.Type == ActivityType.PaymentReceived)
+                            {
+                                <svg class="fill-current w-5 h-5" viewBox="0 0 24 24">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.82v-1.91c-2.47-.21-4.69-1.47-4.69-4.2h2.25c0 1.38 1.12 2.1 2.44 2.1 1.32 0 2.44-.72 2.44-2.1 0-1.38-1.12-2.1-2.44-2.1-1.32 0-2.44-.72-2.44-2.1 0-1.38 1.12-2.1 2.44-2.1a2.44 2.44 0 0 1 2.44 2.1h-2.25c0-1.38-1.12-2.1-2.44-2.1-1.32 0-2.44.72-2.44 2.1 0 1.38 1.12 2.1 2.44 2.1 1.32 0 2.44.72 2.44 2.1 0 1.38-1.12 2.1-2.44 2.1z"/>
+                                </svg>
+                            }
+                            else
+                            {
+                                <svg class="fill-current w-5 h-5" viewBox="0 0 16 16">
+                                    <path d="M8 0a8 8 0 1 0 8 8 8.009 8.009 0 0 0-8-8zm0 14a6 6 0 1 1 6-6 6.007 6.007 0 0 1-6 6z" />
+                                    <path d="M11 7H9V5a1 1 0 0 0-2 0v2H5a1 1 0 0 0 0 2h2v2a1 1 0 0 0 2 0V9h2a1 1 0 0 0 0-2z" />
+                                </svg>
+                            }
+                        </div>
+                        <div class="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-4 rounded-2xl border border-slate-100 shadow-sm group-hover:shadow-md transition-shadow">
+                            <div class="flex items-center justify-between space-x-2 mb-1">
+                                <div class="font-bold text-slate-800">@activity.Title</div>
+                                <time class="text-xs font-medium text-primary-500 uppercase tracking-wider italic">@activity.TimeAgo</time>
+                            </div>
+                            <div class="text-slate-500 text-sm">@activity.Description</div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}

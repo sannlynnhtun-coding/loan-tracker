@@ -1,0 +1,75 @@
+@model List<LoanTypeResponse>
+
+@{
+    ViewData["Title"] = "Loan Products";
+    ViewData["PageHeader"] = "Product Management";
+}
+
+<div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+    <div>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Loan Types</h1>
+        <p class="text-slate-500 mt-1">Configure and manage your financial product offerings.</p>
+    </div>
+    <a asp-action="Create" class="inline-flex items-center px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-2xl shadow-lg shadow-rose-200 transition-all duration-200 group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 group-hover:rotate-90 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        New Loan Type
+    </a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    @foreach (var item in Model)
+    {
+        <div class="bg-white rounded-[2rem] border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 overflow-hidden flex flex-col group">
+            <div class="p-8 flex-1">
+                <div class="flex items-center justify-between mb-6">
+                    <div class="w-14 h-14 bg-rose-50 text-rose-600 rounded-2xl flex items-center justify-center group-hover:bg-rose-600 group-hover:text-white transition-colors duration-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <a asp-action="Edit" asp-route-id="@item.LoanTypeId" class="p-2 text-slate-400 hover:text-amber-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.LoanTypeId" class="p-2 text-slate-400 hover:text-rose-500 transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 tracking-tight">@item.LoanTypeName</h3>
+                <p class="text-slate-500 mt-2 text-sm leading-relaxed">
+                    @(string.IsNullOrEmpty(item.Description) ? "No description provided for this loan type." : item.Description)
+                </p>
+                <div class="mt-6 flex items-center text-xs font-bold text-slate-400 uppercase tracking-widest">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    Added @(item.CreatedDate?.ToString("MMM dd, yyyy") ?? "N/A")
+                </div>
+            </div>
+            <div class="px-8 py-5 bg-slate-50 border-t border-slate-100 flex items-center justify-between group-hover:bg-primary-50/30 transition-colors">
+                <span class="text-sm font-semibold text-slate-600">Configuration ID</span>
+                <span class="text-sm font-bold text-primary-600">#LT-@item.LoanTypeId</span>
+            </div>
+        </div>
+    }
+    @if (!Model.Any())
+    {
+        <div class="col-span-full py-20 bg-white rounded-[2rem] border border-dashed border-slate-300 flex flex-col items-center justify-center text-center">
+             <div class="w-20 h-20 bg-slate-50 text-slate-200 rounded-full flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-bold text-slate-800">No products initialized</h3>
+            <p class="text-slate-500 mt-2 max-w-sm">Create your first loan product to begin offering financial services to your customers.</p>
+            <a asp-action="Create" class="mt-8 text-primary-600 font-bold hover:underline">Get started now &rarr;</a>
+        </div>
+    }
+</div>

@@ -1,0 +1,134 @@
+@model List<CustomerResponse>
+
+@{
+    ViewData["Title"] = "Customers";
+    ViewData["PageHeader"] = "Customer Management";
+}
+
+<div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+    <div>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Active Customers</h1>
+        <p class="text-slate-500 mt-1">Manage all your customers and their basic information.</p>
+    </div>
+    <a asp-action="Create" class="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-2xl shadow-lg shadow-primary-200 transition-all duration-200 group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 group-hover:rotate-90 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        New Customer
+    </a>
+</div>
+
+<!-- Stats Overview -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group">
+        <div class="relative z-10">
+            <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">Total Customers</p>
+            <h3 class="text-3xl font-bold text-slate-900 mt-2">@Model.Count</h3>
+        </div>
+        <div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group">
+        <div class="relative z-10">
+            <p class="text-sm font-medium text-slate-500 uppercase tracking-wider">New This Month</p>
+            <h3 class="text-3xl font-bold text-slate-900 mt-2">8</h3>
+        </div>
+        <div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity text-emerald-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+        </div>
+    </div>
+    <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative overflow-hidden group">
+        <div class="relative z-10 text-primary-600">
+            <p class="text-sm font-medium opacity-70 uppercase tracking-wider">System Reliability</p>
+            <h3 class="text-3xl font-bold mt-2">99.9%</h3>
+        </div>
+        <div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-24 h-24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+        </div>
+    </div>
+</div>
+
+<div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-50/50 border-b border-slate-200">
+                    <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Customer</th>
+                    <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">NRC & Info</th>
+                    <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Mobile No</th>
+                    <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Address</th>
+                    <th class="px-8 py-5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100">
+                @foreach (var item in Model)
+                {
+                    <tr class="hover:bg-slate-50/50 transition-colors group">
+                        <td class="px-8 py-5">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center font-bold text-sm mr-4 border-2 border-white shadow-sm group-hover:scale-110 transition-transform">
+                                    @{
+                                        var initials = item.CustomerName.Trim().ToUpper().Take(2).ToArray();
+                                        @string.Concat(initials)
+                                    }
+                                </div>
+                                <div>
+                                    <div class="text-sm font-bold text-slate-800">@item.CustomerName</div>
+                                    <div class="text-xs text-slate-400">ID: #@item.CustomerId</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5">
+                            <span class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-semibold rounded-full border border-slate-200">
+                                @item.Nrc
+                            </span>
+                        </td>
+                        <td class="px-8 py-5 text-sm text-slate-600 font-medium italic">
+                            @item.MobileNo
+                        </td>
+                        <td class="px-8 py-5 text-sm text-slate-500 max-w-xs truncate">
+                            @item.Address
+                        </td>
+                        <td class="px-8 py-5 text-right">
+                            <div class="flex items-center justify-end space-x-2">
+                                <a asp-action="Edit" asp-route-id="@item.CustomerId" class="p-2 text-amber-500 hover:bg-amber-50 rounded-lg transition-colors" title="Edit Customer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.CustomerId" class="p-2 text-rose-500 hover:bg-rose-50 rounded-lg transition-colors" title="Delete Customer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="5" class="px-8 py-20 text-center">
+                            <div class="flex flex-col items-center">
+                                <div class="w-16 h-16 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                </div>
+                                <h3 class="text-lg font-semibold text-slate-800">No customers found</h3>
+                                <p class="text-slate-500 max-w-xs mt-1">Start building your customer base by clicking the "New Customer" button.</p>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

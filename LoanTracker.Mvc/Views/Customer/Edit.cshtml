@@ -1,0 +1,83 @@
+@model CustomerRequest
+
+@{
+    ViewData["Title"] = "Edit Customer";
+    ViewData["PageHeader"] = "Customer Management";
+}
+
+<div class="max-w-3xl mx-auto">
+    <div class="mb-8">
+        <a asp-action="Index" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-primary-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Customers
+        </a>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight mt-4">Edit Customer Profile</h1>
+        <p class="text-slate-500 mt-1">Update the profile information for @Model.CustomerName.</p>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-8 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-lg mr-4 border-2 border-white shadow-sm">
+                    @{
+                        var initials = Model.CustomerName.Trim().ToUpper().Take(2).ToArray();
+                        @string.Concat(initials)
+                    }
+                </div>
+                <div>
+                    <h2 class="font-bold text-slate-800">Account #@Model.CustomerId</h2>
+                    <p class="text-xs text-slate-400 capitalize">Member since @(Model.CreatedDate?.ToString("MMM yyyy") ?? "Recently")</p>
+                </div>
+            </div>
+            <div class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full border border-emerald-200 uppercase tracking-wider">Active</div>
+        </div>
+        <form asp-action="Edit" class="p-8 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Name -->
+                <div class="space-y-2">
+                    <label asp-for="CustomerName" class="text-sm font-bold text-slate-700">Full Name</label>
+                    <div class="relative">
+                        <input asp-for="CustomerName" class="w-full pl-4 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 focus:bg-white focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all outline-none" />
+                        <span asp-validation-for="CustomerName" class="text-xs text-rose-500 mt-1 block"></span>
+                    </div>
+                </div>
+
+                <!-- NRC -->
+                <div class="space-y-2">
+                    <label asp-for="Nrc" class="text-sm font-bold text-slate-700">NRC Number</label>
+                    <div class="relative">
+                        <input asp-for="Nrc" class="w-full pl-4 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 focus:bg-white focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all outline-none" />
+                        <span asp-validation-for="Nrc" class="text-xs text-rose-500 mt-1 block"></span>
+                    </div>
+                </div>
+
+                <!-- Mobile -->
+                <div class="space-y-2">
+                    <label asp-for="MobileNo" class="text-sm font-bold text-slate-700">Mobile Number</label>
+                    <div class="relative">
+                        <input asp-for="MobileNo" class="w-full pl-4 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 focus:bg-white focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all outline-none" />
+                        <span asp-validation-for="MobileNo" class="text-xs text-rose-500 mt-1 block"></span>
+                    </div>
+                </div>
+
+                <!-- Address -->
+                <div class="space-y-2 md:col-span-2">
+                    <label asp-for="Address" class="text-sm font-bold text-slate-700">Physical Address</label>
+                    <div class="relative">
+                        <textarea asp-for="Address" rows="3" class="w-full pl-4 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 focus:bg-white focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all outline-none resize-none"></textarea>
+                        <span asp-validation-for="Address" class="text-xs text-rose-500 mt-1 block"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-4">
+                <a asp-action="Index" class="px-6 py-3 font-semibold text-slate-600 hover:bg-slate-50 rounded-2xl transition-all">Cancel</a>
+                <button type="submit" class="px-10 py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl shadow-lg shadow-amber-100 transition-all active:scale-95">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

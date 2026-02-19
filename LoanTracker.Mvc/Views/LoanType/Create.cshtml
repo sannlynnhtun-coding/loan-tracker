@@ -1,0 +1,64 @@
+@model LoanTypeRequest
+
+@{
+    ViewData["Title"] = "Create Loan Type";
+    ViewData["PageHeader"] = "Product Design";
+}
+
+<div class="max-w-2xl mx-auto">
+    <div class="mb-8">
+        <a asp-action="Index" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-primary-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Loan Types
+        </a>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight mt-4">Design New Product</h1>
+        <p class="text-slate-500 mt-1">Define the parameters for a new type of loan product (Multi-language).</p>
+    </div>
+
+    <div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
+        <form asp-action="Create" class="p-10 space-y-8">
+            <div class="space-y-6">
+                <!-- English Version -->
+                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100 space-y-4">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest border-b border-slate-200 pb-2">English Version</h3>
+                    <div class="space-y-2">
+                        <label asp-for="LoanTypeName" class="text-sm font-bold text-slate-700">Product Name</label>
+                        <input asp-for="LoanTypeName" class="w-full px-5 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 transition-all outline-none" placeholder="e.g. Business Growth Loan" />
+                        <span asp-validation-for="LoanTypeName" class="text-xs text-rose-500 mt-1 block font-medium"></span>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label asp-for="Description" class="text-sm font-bold text-slate-700">Product Description</label>
+                        <textarea asp-for="Description" rows="3" class="w-full px-5 py-3 bg-white border border-slate-200 rounded-xl text-slate-800 focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 transition-all outline-none resize-none" placeholder="Explain the terms in English..."></textarea>
+                        <span asp-validation-for="Description" class="text-xs text-rose-500 mt-1 block font-medium"></span>
+                    </div>
+                </div>
+
+                <!-- Burmese Version -->
+                <div class="p-6 bg-rose-50/30 rounded-2xl border border-rose-100 space-y-4">
+                    <h3 class="text-xs font-bold text-rose-400 uppercase tracking-widest border-b border-rose-100 pb-2">Burmese Version (မြန်မာဘာသာ)</h3>
+                    <div class="space-y-2">
+                        <label asp-for="BurmeseLoanTypeName" class="text-sm font-bold text-slate-700 font-mm">Product Name (မြန်မာအမည်)</label>
+                        <input asp-for="BurmeseLoanTypeName" class="w-full px-5 py-3 bg-white border border-rose-100 rounded-xl text-slate-800 focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 transition-all outline-none" placeholder="ဥပမာ - စီးပွားရေးလုပ်ငန်းတိုးချဲ့ရေးချေးငွေ" />
+                        <span asp-validation-for="BurmeseLoanTypeName" class="text-xs text-rose-500 mt-1 block font-medium"></span>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label asp-for="BurmeseDescription" class="text-sm font-bold text-slate-700 font-mm">Description (အသေးစိတ်ဖော်ပြချက်)</label>
+                        <textarea asp-for="BurmeseDescription" rows="3" class="w-full px-5 py-3 bg-white border border-rose-100 rounded-xl text-slate-800 focus:ring-4 focus:ring-rose-500/10 focus:border-rose-500 transition-all outline-none resize-none" placeholder="ချေးငွေအကြောင်း အသေးစိတ် မြန်မာလိုရေးပေးပါ..."></textarea>
+                        <span asp-validation-for="BurmeseDescription" class="text-xs text-rose-500 mt-1 block font-medium"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-slate-100 flex items-center justify-end space-x-4">
+                <a asp-action="Index" class="px-6 py-3 font-semibold text-slate-600 hover:bg-slate-50 rounded-2xl transition-all">Discard</a>
+                <button type="submit" class="px-10 py-4 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl shadow-xl shadow-rose-100 transition-all active:scale-95">
+                    Launch Product
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

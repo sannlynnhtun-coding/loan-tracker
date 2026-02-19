@@ -1,0 +1,94 @@
+@model List<CustomerLoanResponse>
+
+@{
+    ViewData["Title"] = "Customer Loans";
+    ViewData["PageHeader"] = "Loan Portfolio";
+}
+
+<div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+    <div>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Active Loan Portfolio</h1>
+        <p class="text-slate-500 mt-1">Monitor and manage all issued loans across your customer base.</p>
+    </div>
+    <a asp-action="Create" class="inline-flex items-center px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white font-semibold rounded-2xl shadow-lg shadow-amber-200 transition-all duration-200 group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 group-hover:rotate-90 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+        </svg>
+        Issue New Loan
+    </a>
+</div>
+
+<div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-slate-50/50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                    <th class="px-8 py-5">Customer</th>
+                    <th class="px-8 py-5">Product Type</th>
+                    <th class="px-8 py-5">Principal</th>
+                    <th class="px-8 py-5">Total Payable</th>
+                    <th class="px-8 py-5">Terms</th>
+                    <th class="px-8 py-5">Status</th>
+                    <th class="px-8 py-5 text-right">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 italic">
+                @foreach (var item in Model)
+                {
+                    <tr class="hover:bg-slate-50/50 transition-colors">
+                        <td class="px-8 py-5">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-500 mr-3">
+                                    #ID
+                                </div>
+                                <div class="text-sm font-bold text-slate-800">
+                                    @(item.CustomerName ?? "Customer #" + item.CustomerId)
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-8 py-5 text-sm text-slate-600 font-medium">
+                            @(item.LoanTypeName ?? "Standard Loan")
+                        </td>
+                        <td class="px-8 py-5 text-sm font-bold text-slate-900">
+                            @item.PrincipalAmount.ToString("C")
+                        </td>
+                        <td class="px-8 py-5 text-sm font-bold text-primary-600">
+                            @item.TotalAmount.ToString("C")
+                        </td>
+                        <td class="px-8 py-5 text-xs text-slate-500 font-semibold uppercase">
+                            @item.LoanTerm months <span class="mx-1">@@</span> @item.InterestRate%
+                        </td>
+                        <td class="px-8 py-5">
+                            @{
+                                var statusClass = item.Status?.ToLower() switch
+                                {
+                                    "paid" => "bg-emerald-100 text-emerald-700 border-emerald-200",
+                                    "pending" => "bg-amber-100 text-amber-700 border-amber-200",
+                                    _ => "bg-slate-100 text-slate-700 border-slate-200"
+                                };
+                            }
+                            <span class="px-3 py-1 text-[10px] font-bold rounded-full border @statusClass uppercase tracking-wider">
+                                @(item.Status ?? "Active")
+                            </span>
+                        </td>
+                        <td class="px-8 py-5 text-right">
+                             <a asp-action="Delete" asp-route-id="@item.LoanId" class="p-2 text-rose-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all inline-block">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr>
+                        <td colspan="7" class="px-8 py-20 text-center">
+                            <p class="text-slate-400 font-medium">No loans have been issued yet.</p>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

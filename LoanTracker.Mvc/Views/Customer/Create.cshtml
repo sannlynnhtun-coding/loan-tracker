@@ -1,0 +1,72 @@
+@model CustomerRequest
+
+@{
+    ViewData["Title"] = "Create Customer";
+    ViewData["PageHeader"] = "Registration";
+}
+
+<div class="max-w-3xl mx-auto">
+    <div class="mb-8">
+        <a asp-action="Index" class="inline-flex items-center text-sm font-medium text-slate-500 hover:text-primary-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Customers
+        </a>
+        <h1 class="text-3xl font-bold text-slate-900 tracking-tight mt-4">New Customer Registration</h1>
+        <p class="text-slate-500 mt-1">Fill in the primary details to register a new client in the system.</p>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="p-8 border-b border-slate-100 bg-slate-50/50">
+            <h2 class="text-lg font-bold text-slate-800">Primary Information</h2>
+            <p class="text-sm text-slate-500 mt-1">Provide legal and contact information for the customer.</p>
+        </div>
+        <form asp-action="Create" class="p-8 space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Name -->
+                <div class="space-y-2">
+                    <label asp-for="CustomerName" class="text-sm font-bold text-slate-700">Full Name</label>
+                    <div class="relative">
+                        <input asp-for="CustomerName" class="w-full pl-4 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 focus:bg-white focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all outline-none" placeholder="e.g. John Doe" />
+                        <span asp-validation-for="CustomerName" class="text-xs text-rose-500 mt-1 block"></span>
+                    </div>
+                </div>
+
+                <!-- NRC -->
+                <div class="space-y-2">
+                    <label asp-for="Nrc" class="text-sm font-bold text-slate-700">NRC Number</label>
+                    <div class="relative">
+                        <input asp-for="Nrc" class="w-full pl-4 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 focus:bg-white focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all outline-none" placeholder="12/YAKANA(N)123456" />
+                        <span asp-validation-for="Nrc" class="text-xs text-rose-500 mt-1 block"></span>
+                    </div>
+                </div>
+
+                <!-- Mobile -->
+                <div class="space-y-2">
+                    <label asp-for="MobileNo" class="text-sm font-bold text-slate-700">Mobile Number</label>
+                    <div class="relative">
+                        <input asp-for="MobileNo" class="w-full pl-4 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 focus:bg-white focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all outline-none" placeholder="09123456789" />
+                        <span asp-validation-for="MobileNo" class="text-xs text-rose-500 mt-1 block"></span>
+                    </div>
+                </div>
+
+                <!-- Address (Full Width) -->
+                <div class="space-y-2 md:col-span-2">
+                    <label asp-for="Address" class="text-sm font-bold text-slate-700">Physical Address</label>
+                    <div class="relative">
+                        <textarea asp-for="Address" rows="3" class="w-full pl-4 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-2xl text-slate-800 focus:bg-white focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all outline-none resize-none" placeholder="Street, City, State..."></textarea>
+                        <span asp-validation-for="Address" class="text-xs text-rose-500 mt-1 block"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-6 border-t border-slate-100 flex items-center justify-end space-x-4">
+                <a asp-action="Index" class="px-6 py-3 font-semibold text-slate-600 hover:bg-slate-50 rounded-2xl transition-all">Cancel</a>
+                <button type="submit" class="px-10 py-3 bg-primary-600 hover:bg-primary-700 text-white font-bold rounded-2xl shadow-lg shadow-primary-200 transition-all active:scale-95">
+                    Register Customer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
