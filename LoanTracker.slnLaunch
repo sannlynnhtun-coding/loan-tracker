@@ -1,0 +1,17 @@
+[
+  {
+    "Name": "App + API",
+    "Projects": [
+      {
+        "Path": "LoanTracker.Api\\LoanTracker.Api.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      },
+      {
+        "Path": "LoanTracker.Mvc\\LoanTracker.Mvc.csproj",
+        "Action": "Start",
+        "DebugTarget": "https"
+      }
+    ]
+  }
+]
