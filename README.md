@@ -1,37 +1,60 @@
-# LoanTracker (ASP.NET Core Web API - .NET 8)
+# LoanTracker (ASP.NET Core .NET 8)
 
-> LoanTracker is a loan management system designed to help financial institutions or businesses manage customer loans, payments, and loan types efficiently.
-
----
-
-#### **1. Customer Management**
-- **As a user**, I can add, update, delete, and retrieve customer details (e.g., name, NRC, mobile number, address) so that I can manage customer information effectively.
-- **As a user**, I can search for customers by name or NRC so that I can quickly find specific customer records.
+**LoanTracker** is a comprehensive loan management system designed to streamline the operations of financial institutions or businesses that provide lending services. Built with **ASP.NET Core (.NET 8)**, it provides a robust ecosystem for managing the entire loan lifecycle—from customer onboarding and localized product management to automated repayment schedules and real-time analytics.
 
 ---
 
-#### **2. Loan Management**
-- **As a user**, I can create, update, delete, and retrieve loan details (e.g., loan type, principal amount, interest rate, loan term) so that I can manage loans for customers.
-- **As a user**, I can generate payment schedules automatically when a loan is created so that I can track repayment details.
-- **As a user**, I can update the loan status to "Completed" when all payments are made so that I can track the loan lifecycle.
+## 🏛 Architecture Overview
+
+The project follows a decoupled, multi-layered architecture to ensure scalability and maintainability:
+
+- **LoanTracker.Shared**: The central contract library containing all Request/Response DTOs and the unified `Result<T>` wrapper. This ensures type safety and consistency across all layers.
+- **LoanTracker.Domain**: The business logic layer. It contains services that handle complex operations, validation, and error handling, returning wrapped results.
+- **LoanTracker.Database**: Data access layer using **Entity Framework Core**. It manages the SQL Server schema, entities, and database-first mappings.
+- **LoanTracker.Api**: A secure RESTful API layer that exposes endpoints for mobile or external integration. It implements **Basic Authentication** and uses extension methods for consistent HTTP response mapping.
+- **LoanTracker.Mvc**: The modern frontend dashboard built with ASP.NET Core MVC and **Tailwind CSS**. It consumes the API via a centralized `HttpClientService` and provides a premium, responsive user experience.
 
 ---
 
-#### **3. Payment Management**
-- **As a user**, I can add payments for a loan so that I can track repayments.
-- **As a user**, I can calculate and apply late fees (1% per day) for overdue payments so that I can enforce repayment rules.
-- **As a user**, I can update payment status (e.g., "On-Time", "Late", "Paid") so that I can monitor payment compliance.
+## ⚙ Business Logic & Key Modules
+
+### 1. Customer Management
+- **Smart Onboarding**: Capture essential details (Name, NRC, Mobile, Address) with built-in data integrity checks for unique identity documents.
+- **Quick Lookup**: Search and locate customers instantly via Name or NRC.
+
+### 2. Loan Product Configuration (Loan Types)
+- **Localized Support**: Define loan products with dual-language support (English and Burmese) for names and descriptions, catering to local operational needs.
+- **Full Lifecycle Mastery**: Manage everything from personal loans to complex business growth capital.
+
+### 3. Automated Loan Portfolio
+- **Intelligent Amortization**: Automatically generates equal installment schedules upon loan creation using standard financial formulas.
+- **Portfolio Tracking**: Monitor loan status from "Active" to "Completed" in real-time.
+- **Repayment Frequency**: Flexible scheduling including monthly installments.
+
+### 4. Advanced Payment Management
+- **Automated Late Fees**: System automatically enforces a **1% per day** late fee policy for payments made after the `DueDate`.
+- **Compliance Monitoring**: Tracks payment status as "On-Time", "Late", or "Paid" to provide deep insights into borrower behavior.
+
+### 5. Real-Time Dashboard Analytics
+- **Portfolio Metrics**: Instant visibility into Total Portfolio Value, Active Loan Counts, and Late Payment alerts.
+- **Dynamic Activity Feed**: A live stream of recent system events, including successful payment postings and new loan originations.
 
 ---
 
-#### **4. Loan Type Management**
-- **As a user**, I can add, update, delete, and retrieve loan types (e.g., personal loan, business loan) so that I can manage different loan products.
-- **As a user**, I can add Burmese translations for loan types so that I can support multilingual loan type names.
+## 🚀 Tech Stack
+
+- **Core**: .NET 8 (LTS)
+- **ORM**: Entity Framework Core 8
+- **Database**: SQL Server
+- **UI Architecture**: ASP.NET Core MVC + Tailwind CSS
+- **Serialization**: Newtonsoft.Json (Customized for consistent DTO handling)
+- **Security**: Basic Authentication for API protection
+- **Design**: Premium Modern Aesthetics with Glassmorphism and Micro-animations
 
 ---
 
-### Key Features
-- **RESTful API**: Built with ASP.NET Core Web API (.NET 8) for seamless integration with front-end applications.
-- **Database**: Uses Entity Framework Core for database operations with SQL Server.
-- **Validation**: Ensures data integrity with validation checks (e.g., unique NRC, mobile number).
-- **Automation**: Automatically generates payment schedules and calculates late fees.
+## 🛠 Getting Started
+
+1. **Database Setup**: Execute the `LoanTracker.sql` script in your SQL Server instance to initialize the schema and seed data.
+2. **API Configuration**: Update the `ConnectionStrings` in `LoanTracker.Api/appsettings.json`.
+3. **Run**: Launch the `LoanTracker.Api` project first, followed by the `LoanTracker.Mvc` project to access the management dashboard.
