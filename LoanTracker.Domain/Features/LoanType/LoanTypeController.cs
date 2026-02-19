@@ -1,4 +1,7 @@
-﻿namespace LoanTracker.Application.Services;
+﻿using LoanTracker.Shared.Models;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LoanTracker.Application.Services;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -12,9 +15,9 @@ public class LoanTypeController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IResult> AddLoanType([FromBody] AddLoanTypeRequest request)
+    public async Task<IResult> AddLoanType([FromBody] LoanTypeRequest request)
     {
-        var result = await _loanTypeService.AddLoanTypeAsync(request.LoanType!, request.BurmeseLoanType!);
+        var result = await _loanTypeService.AddLoanTypeAsync(request);
         return result.Execute();
     }
 
@@ -33,10 +36,10 @@ public class LoanTypeController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IResult> UpdateLoanType(int id, [FromBody] TblLoanType loanType)
+    public async Task<IResult> UpdateLoanType(int id, [FromBody] LoanTypeRequest request)
     {
-        loanType.LoanTypeId = id;
-        var result = await _loanTypeService.UpdateLoanTypeAsync(loanType);
+        request.LoanTypeId = id;
+        var result = await _loanTypeService.UpdateLoanTypeAsync(request);
         return result.Execute();
     }
 
@@ -46,10 +49,4 @@ public class LoanTypeController : ControllerBase
         var result = await _loanTypeService.DeleteLoanTypeAsync(id);
         return result.Execute();
     }
-}
-
-public class AddLoanTypeRequest
-{
-    public TblLoanType? LoanType { get; set; }
-    public TblLoanTypeBurmese? BurmeseLoanType { get; set; }
 }

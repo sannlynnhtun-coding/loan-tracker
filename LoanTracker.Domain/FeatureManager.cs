@@ -8,5 +8,6 @@ public static class FeatureManager
         builder.Services.AddScoped<CustomerLoanService>();
         builder.Services.AddScoped<CustomerPaymentService>();
         builder.Services.AddScoped<LoanTypeService>();
+        builder.Services.AddScoped<DashboardService>();
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace LoanTracker.Application.Services;
+﻿using LoanTracker.Shared.Models;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LoanTracker.Application.Services;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -12,7 +15,7 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IResult> AddCustomer([FromBody] TblCustomer customer)
+    public async Task<IResult> AddCustomer([FromBody] CustomerRequest customer)
     {
         var result = await _customerService.AddCustomerAsync(customer);
         return result.Execute();
@@ -33,7 +36,7 @@ public class CustomerController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IResult> UpdateCustomer(int id, [FromBody] TblCustomer customer)
+    public async Task<IResult> UpdateCustomer(int id, [FromBody] CustomerRequest customer)
     {
         customer.CustomerId = id;
         var result = await _customerService.UpdateCustomerAsync(customer);

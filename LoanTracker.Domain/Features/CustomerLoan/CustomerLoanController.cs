@@ -1,4 +1,7 @@
-﻿namespace LoanTracker.Domain.Features.CustomerLoan;
+﻿using LoanTracker.Shared.Models;
+using Microsoft.AspNetCore.Mvc;
+
+namespace LoanTracker.Domain.Features.CustomerLoan;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -12,7 +15,7 @@ public class CustomerLoanController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IResult> CreateLoan([FromBody] TblCustomerLoan loan)
+    public async Task<IResult> CreateLoan([FromBody] CustomerLoanRequest loan)
     {
         var result = await _customerLoanService.CreateLoanAsync(loan);
         return result.Execute();
@@ -25,10 +28,16 @@ public class CustomerLoanController : ControllerBase
         return result.Execute();
     }
 
-    [HttpPut("{id}")]
-    public async Task<IResult> UpdateLoan(int id, [FromBody] TblCustomerLoan loan)
+    [HttpGet]
+    public async Task<IResult> GetAllLoans()
     {
-        loan.LoanId = id;
+        var result = await _customerLoanService.GetAllLoansAsync();
+        return result.Execute();
+    }
+
+    [HttpPut("{id}")]
+    public async Task<IResult> UpdateLoan(int id, [FromBody] CustomerLoanRequest loan)
+    {
         var result = await _customerLoanService.UpdateLoanAsync(id, loan);
         return result.Execute();
     }

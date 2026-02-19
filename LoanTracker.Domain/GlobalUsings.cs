@@ -10,7 +10,7 @@ global using LoanTracker.Database.AppDbContextModels;
 global using LoanTracker.Domain.Features.CustomerLoan;
 global using LoanTracker.Domain.Features.CustomerPayment;
 global using LoanTracker.Domain.Models;
-global using LoanTracker.Shared;
+global using LoanTracker.Shared.Models;
 global using Microsoft.AspNetCore.Builder;
 global using Microsoft.AspNetCore.Http;
 global using Microsoft.AspNetCore.Mvc;
