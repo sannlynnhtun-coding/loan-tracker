@@ -20,4 +20,10 @@
     <ProjectReference Include="..\LoanTracker.Shared\LoanTracker.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="wwwroot\vercel.json">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
