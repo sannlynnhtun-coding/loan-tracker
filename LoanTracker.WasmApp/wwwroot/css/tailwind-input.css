@@ -1,22 +1,33 @@
 @import "tailwindcss";
 
 @theme {
-    --color-premium-50: #f0fdf4;
-    --color-premium-100: #dcfce7;
-    --color-premium-200: #bbf7d0;
-    --color-premium-300: #86efac;
-    --color-premium-400: #4ade80;
-    --color-premium-500: #22c55e;
-    --color-premium-600: #16a34a;
-    --color-premium-700: #15803d;
-    --color-premium-800: #166534;
-    --color-premium-900: #14532d;
-    --color-premium-950: #052e16;
+    --color-premium-50: #f8fafc;
+    /* Slate 50 - Neutral Soft */
+    --color-premium-100: #f1f5f9;
+    /* Slate 100 */
+    --color-premium-200: #e2e8f0;
+    /* Slate 200 */
+    --color-premium-300: #cbd5e1;
+    /* Slate 300 */
+    --color-premium-400: #94a3b8;
+    /* Slate 400 */
+    --color-premium-500: #10b981;
+    /* Emerald 500 - Refined Brand */
+    --color-premium-600: #059669;
+    /* Emerald 600 */
+    --color-premium-700: #047857;
+    /* Emerald 700 */
+    --color-premium-800: #064e3b;
+    /* Emerald 800 */
+    --color-premium-900: #0f172a;
+    /* Slate 900 - Sidebar/Text */
+    --color-premium-950: #020617;
+    /* Slate 950 */
 }
 
 @layer base {
     body {
-        @apply bg-premium-50 text-premium-950 font-sans;
+        @apply bg-premium-50 text-premium-900 font-sans;
     }
 }
 
