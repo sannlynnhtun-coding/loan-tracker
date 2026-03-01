@@ -1,0 +1,119 @@
+﻿@page "/"
+@inject IndexedDbService Db
+
+<PageTitle>LoanTracker Dashboard</PageTitle>
+
+<div class="max-w-6xl mx-auto py-8 px-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+        <div>
+            <h1 class="text-4xl font-extrabold text-premium-900 tracking-tight">Dashboard</h1>
+            <p class="text-premium-600 mt-1 font-medium italic">Empowering your lending operations</p>
+        </div>
+        <div class="flex gap-3">
+            <a href="generate-data" class="btn-premium flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                Manage Data
+            </a>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <Card Title="Customers" Class="border-t-4 border-t-premium-500 hover:shadow-2xl transition-shadow cursor-default group">
+            <div class="flex items-end justify-between">
+                <div class="text-4xl font-black text-premium-900 font-mono">@(customers?.Count ?? 0)</div>
+                <div class="p-2 bg-premium-100 rounded-lg text-premium-700 group-hover:bg-premium-200 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </div>
+            </div>
+            <p class="text-xs font-semibold text-premium-400 uppercase tracking-widest mt-2">IndexedDB Cache</p>
+        </Card>
+        
+        <Card Title="Loan Products" Class="border-t-4 border-t-premium-500 hover:shadow-2xl transition-shadow cursor-default group">
+            <div class="flex items-end justify-between">
+                <div class="text-4xl font-black text-premium-900 font-mono">@(loanTypes?.Count ?? 0)</div>
+                <div class="p-2 bg-premium-100 rounded-lg text-premium-700 group-hover:bg-premium-200 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                </div>
+            </div>
+            <p class="text-xs font-semibold text-premium-400 uppercase tracking-widest mt-2">Active Types</p>
+        </Card>
+
+        <Card Title="Total Loans" Class="border-t-4 border-t-premium-500 hover:shadow-2xl transition-shadow cursor-default group">
+            <div class="flex items-end justify-between">
+                <div class="text-4xl font-black text-premium-900 font-mono">@(loans?.Count ?? 0)</div>
+                <div class="p-2 bg-premium-100 rounded-lg text-premium-700 group-hover:bg-premium-200 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+            </div>
+            <p class="text-xs font-semibold text-premium-400 uppercase tracking-widest mt-2">System Wide</p>
+        </Card>
+    </div>
+
+    <Card Title="Local Repository Overview">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="text-premium-500 border-b border-premium-100 text-sm uppercase tracking-wider">
+                        <th class="pb-4 font-bold">Identified Customer</th>
+                        <th class="pb-4 font-bold">NRC Reference</th>
+                        <th class="pb-4 font-bold">Contact Channel</th>
+                        <th class="pb-4 font-bold text-right">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-premium-50">
+                    @if (customers == null || !customers.Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="py-16 text-center">
+                                <div class="flex flex-col items-center gap-2">
+                                    <div class="w-12 h-12 text-premium-200">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path></svg>
+                                    </div>
+                                    <span class="text-premium-400 font-medium">No records found in IndexedDB. Use Manage Data to generate.</span>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var customer in customers.Take(5))
+                        {
+                            <tr class="group hover:bg-premium-50/50 transition-colors">
+                                <td class="py-4 font-bold text-premium-900">@customer.CustomerName</td>
+                                <td class="py-4 text-premium-600 font-mono text-sm">@customer.Nrc</td>
+                                <td class="py-4 text-premium-600">@customer.MobileNo</td>
+                                <td class="py-4 text-right">
+                                    <span class="px-2.5 py-1 bg-premium-100 text-premium-700 rounded-full text-xs font-bold uppercase tracking-tighter">Local</span>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+        @if (customers?.Count > 5)
+        {
+            <div class="mt-6 pt-4 border-t border-premium-50 text-center">
+                <button class="text-premium-600 font-bold text-sm hover:text-premium-800 transition-colors">View All Customers ✨</button>
+            </div>
+        }
+    </Card>
+</div>
+
+@code {
+    private List<CustomerResponse>? customers;
+    private List<LoanTypeResponse>? loanTypes;
+    private List<CustomerLoanResponse>? loans;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+    }
+
+    private async Task LoadData()
+    {
+        customers = await Db.GetAllCustomers();
+        loanTypes = await Db.GetAllLoanTypes();
+        loans = await Db.GetAllLoans();
+    }
+}

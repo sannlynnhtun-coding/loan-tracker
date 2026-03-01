@@ -1,0 +1,75 @@
+@page "/customers/create"
+@inject IndexedDbService Db
+@inject NavigationManager Navigation
+
+<PageTitle>Register Borrower</PageTitle>
+
+<div class="max-w-2xl mx-auto py-12 px-6">
+    <div class="mb-10">
+        <button @onclick="@(() => Navigation.NavigateTo("/customers"))" class="text-premium-400 hover:text-premium-600 font-bold text-sm flex items-center gap-2 mb-4 group transition-colors">
+            <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            Back to Directory
+        </button>
+        <h1 class="text-4xl font-black text-premium-900 tracking-tight">Register Borrower</h1>
+        <p class="text-premium-600 font-medium">Add a new verified profile to the local repository.</p>
+    </div>
+
+    <Card>
+        <EditForm Model="customer" OnValidSubmit="HandleSubmit" class="space-y-6">
+            <DataAnnotationsValidator />
+
+            <div class="space-y-1">
+                <label class="text-xs font-black uppercase tracking-widest text-premium-500">Full Legal Name</label>
+                <InputText @bind-Value="customer.CustomerName" placeholder="e.g. Daw Hla Hla" 
+                           class="w-full px-4 py-3 bg-premium-50 border border-premium-100 rounded-xl focus:ring-4 focus:ring-premium-500/10 focus:border-premium-500 outline-none transition-all font-bold text-premium-900" />
+                <ValidationMessage For="@(() => customer.CustomerName)" class="text-rose-500 text-xs font-bold mt-1" />
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="space-y-1">
+                    <label class="text-xs font-black uppercase tracking-widest text-premium-500">NRC Reference</label>
+                    <InputText @bind-Value="customer.Nrc" placeholder="e.g. 12/MAGANA(N)123456" 
+                               class="w-full px-4 py-3 bg-premium-50 border border-premium-100 rounded-xl focus:ring-4 focus:ring-premium-500/10 focus:border-premium-500 outline-none transition-all font-bold text-premium-900" />
+                    <ValidationMessage For="@(() => customer.Nrc)" class="text-rose-500 text-xs font-bold mt-1" />
+                </div>
+                <div class="space-y-1">
+                    <label class="text-xs font-black uppercase tracking-widest text-premium-500">Mobile Number</label>
+                    <InputText @bind-Value="customer.MobileNo" placeholder="e.g. 09456789012" 
+                               class="w-full px-4 py-3 bg-premium-50 border border-premium-100 rounded-xl focus:ring-4 focus:ring-premium-500/10 focus:border-premium-500 outline-none transition-all font-bold text-premium-900" />
+                    <ValidationMessage For="@(() => customer.MobileNo)" class="text-rose-500 text-xs font-bold mt-1" />
+                </div>
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-xs font-black uppercase tracking-widest text-premium-500">Official Address</label>
+                <InputTextArea @bind-Value="customer.Address" rows="3" placeholder="Enter complete residential address..." 
+                               class="w-full px-4 py-3 bg-premium-50 border border-premium-100 rounded-xl focus:ring-4 focus:ring-premium-500/10 focus:border-premium-500 outline-none transition-all font-bold text-premium-900 resize-none" />
+            </div>
+
+            <div class="pt-4">
+                <Button Type="submit" IsLoading="isSubmitting" Class="w-full h-14 text-lg shadow-xl shadow-premium-500/20">
+                    Verify and Register Profile
+                </Button>
+            </div>
+        </EditForm>
+    </Card>
+</div>
+
+@code {
+    private CustomerResponse customer = new();
+    private bool isSubmitting = false;
+
+    private async Task HandleSubmit()
+    {
+        isSubmitting = true;
+        try
+        {
+            await Db.AddCustomer(customer);
+            Navigation.NavigateTo("/customers");
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+}

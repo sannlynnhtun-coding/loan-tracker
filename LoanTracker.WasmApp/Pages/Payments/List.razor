@@ -1,0 +1,51 @@
+@page "/payments"
+@inject IndexedDbService Db
+@inject NavigationManager Navigation
+
+<PageTitle>Payment Processing</PageTitle>
+
+<div class="max-w-6xl mx-auto py-10 px-6">
+    <div class="mb-10 text-center">
+        <h1 class="text-4xl font-black text-premium-900 tracking-tight">Active Repayments</h1>
+        <p class="text-premium-600 font-medium mt-2">Manage incoming installments and settle late accounts.</p>
+    </div>
+
+    <!-- This page will be expanded to show pending schedules, for now just a summary -->
+    <Card Title="Consolidated Payment Journal">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="text-premium-500 border-b border-premium-100 text-xs uppercase tracking-[0.2em] font-black">
+                        <th class="pb-4 px-4 font-bold">Transaction Reference</th>
+                        <th class="pb-4 px-4 font-bold">Value Date</th>
+                        <th class="pb-4 px-4 font-bold">Amount Settled</th>
+                        <th class="pb-4 px-4 font-bold">Arrears/Fees</th>
+                        <th class="pb-4 px-4 font-bold text-right">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-premium-50">
+                    <tr>
+                        <td colspan="5" class="py-20 text-center bg-premium-50/20 rounded-b-3xl">
+                            <div class="flex flex-col items-center gap-4">
+                                <div class="w-12 h-12 text-premium-200">
+                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                </div>
+                                <span class="text-premium-400 font-black uppercase tracking-widest text-xs">No payment history identified in local journal</span>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </Card>
+
+    <div class="mt-12 flex justify-center">
+        <Button OnClick="@(() => Navigation.NavigateTo("/loans"))" Class="px-8 shadow-xl">
+            Go to Active Loans to Post Payment →
+        </Button>
+    </div>
+</div>
+
+@code {
+    // This view will be expanded as we implement detailed schedule views
+}

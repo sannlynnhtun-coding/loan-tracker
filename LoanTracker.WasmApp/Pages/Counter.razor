@@ -1,0 +1,28 @@
+﻿@page "/counter"
+
+<PageTitle>Transaction Counter</PageTitle>
+
+<div class="max-w-2xl mx-auto py-12">
+    <Card Title="High-Frequency Counter" Class="text-center">
+        <p class="text-premium-600 mb-8 font-medium">This component demonstrates Blazor's real-time state management capabilities.</p>
+        
+        <div class="inline-flex items-center justify-center w-32 h-32 bg-premium-100 rounded-full mb-8 border-4 border-white shadow-inner">
+            <span class="text-5xl font-black text-premium-900 font-mono">@currentCount</span>
+        </div>
+
+        <div class="flex justify-center">
+            <Button OnClick="IncrementCount" Class="px-8 py-4 text-lg shadow-premium-500/20 shadow-xl">
+                Increment Count
+            </Button>
+        </div>
+    </Card>
+</div>
+
+@code {
+    private int currentCount = 0;
+
+    private void IncrementCount()
+    {
+        currentCount++;
+    }
+}

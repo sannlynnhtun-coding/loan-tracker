@@ -1,0 +1,133 @@
+@page "/loans"
+@inject IndexedDbService Db
+@inject NavigationManager Navigation
+
+<PageTitle>Active Loan Portfolio</PageTitle>
+
+<div class="max-w-6xl mx-auto py-10 px-4 sm:px-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+        <div>
+            <h1 class="text-3xl sm:text-4xl font-black text-premium-900 tracking-tight">Loan Portfolio</h1>
+            <p class="text-premium-600 font-medium">Monitoring active credit facilities and performance.</p>
+        </div>
+        <Button OnClick="@(() => Navigation.NavigateTo("/loans/apply"))" Class="w-full md:w-auto shadow-xl">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            Originate New Loan
+        </Button>
+    </div>
+
+    <Card>
+        @if (pagedLoans == null)
+        {
+            <div class="py-20 text-center animate-pulse">
+                <div class="w-8 h-8 bg-premium-200 rounded-full mx-auto mb-4"></div>
+                <p class="text-premium-400 font-black text-xs uppercase tracking-widest">Aggregating records...</p>
+            </div>
+        }
+        else if (!pagedLoans.Any())
+        {
+            <div class="py-20 text-center">
+                <div class="w-16 h-16 bg-premium-50 rounded-full flex items-center justify-center text-premium-200 mx-auto mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <p class="text-premium-400 font-bold italic">Zero active credit records identified.</p>
+            </div>
+        }
+        else
+        {
+            <!-- Mobile View: Summary Cards -->
+            <div class="grid grid-cols-1 gap-4 sm:hidden">
+                @foreach (var loan in pagedLoans)
+                {
+                    <div @onclick="@(() => Navigation.NavigateTo($"/loans/details/{loan.LoanId}"))" 
+                         class="p-5 bg-premium-50/50 rounded-2xl border border-premium-100 space-y-4 active:scale-95 transition-transform">
+                        <div class="flex justify-between items-start">
+                            <h4 class="font-black text-premium-900">@loan.CustomerName</h4>
+                            <span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-[8px] font-black uppercase">@loan.Status</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <p class="text-[8px] uppercase font-black text-premium-400 tracking-widest">Principal</p>
+                                <p class="text-sm font-mono font-bold text-premium-900">@loan.PrincipalAmount.ToString("N0")</p>
+                            </div>
+                            <div>
+                                <p class="text-[8px] uppercase font-black text-premium-400 tracking-widest">Type</p>
+                                <p class="text-xs font-bold text-premium-600 truncate">@loan.LoanTypeName</p>
+                            </div>
+                        </div>
+                        <div class="pt-2 border-t border-premium-100/50 flex justify-between items-center">
+                            <span class="text-[10px] font-black text-premium-500 uppercase tracking-widest">Detail Index →</span>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Tablet/Desktop View -->
+            <div class="hidden sm:block overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-premium-500 border-b border-premium-100 text-xs uppercase tracking-[0.2em] font-black">
+                            <th class="pb-4 px-4 font-bold">Borrower Entity</th>
+                            <th class="pb-4 px-4 font-bold">Product Type</th>
+                            <th class="pb-4 px-4 font-bold">Principal</th>
+                            <th class="pb-4 px-4 font-bold">Rate</th>
+                            <th class="pb-4 px-4 font-bold">Status</th>
+                            <th class="pb-4 px-4 font-bold text-right">View Schedule</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-premium-50">
+                        @foreach (var loan in pagedLoans)
+                        {
+                            <tr class="group hover:bg-premium-50/50 transition-colors">
+                                <td class="py-4 px-4 font-bold text-premium-900">@loan.CustomerName</td>
+                                <td class="py-4 px-4">
+                                    <span class="px-2 py-0.5 bg-premium-100 text-premium-700 rounded text-[10px] font-black uppercase tracking-wider">@loan.LoanTypeName</span>
+                                </td>
+                                <td class="py-4 px-4 text-premium-900 font-mono font-bold">@loan.PrincipalAmount.ToString("N0")</td>
+                                <td class="py-4 px-4 text-premium-600 font-mono text-xs">@loan.InterestRate% <span class="text-premium-300">/ yr</span></td>
+                                <td class="py-4 px-4">
+                                    <span class="px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-black uppercase">@loan.Status</span>
+                                </td>
+                                <td class="py-4 px-4 text-right">
+                                    <button @onclick="@(() => Navigation.NavigateTo($"/loans/details/{loan.LoanId}"))" class="text-premium-600 hover:text-premium-800 font-black text-sm transition-colors group/btn">
+                                        ANALYZE <span class="group-hover:translate-x-1 inline-block transition-transform">→</span>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <Pagination TItem="CustomerLoanResponse" 
+                        TotalCount="@TotalCount" 
+                        PageIndex="@pageIndex" 
+                        PageSize="@pageSize" 
+                        OnPageChanged="OnPageChanged" />
+        }
+    </Card>
+</div>
+
+@code {
+    private List<CustomerLoanResponse>? allLoans;
+    private IEnumerable<CustomerLoanResponse>? pagedLoans => allLoans?.Skip(pageIndex * pageSize).Take(pageSize);
+
+    private int TotalCount => allLoans?.Count ?? 0;
+    private int pageIndex = 0;
+    private int pageSize = 10;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadLoans();
+    }
+
+    private async Task LoadLoans()
+    {
+        allLoans = await Db.GetAllLoans();
+    }
+
+    private void OnPageChanged(int newIndex)
+    {
+        pageIndex = newIndex;
+    }
+}

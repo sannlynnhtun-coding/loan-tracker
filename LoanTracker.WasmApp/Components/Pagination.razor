@@ -1,0 +1,55 @@
+@typeparam TItem
+
+<div class="flex flex-col sm:flex-row items-center justify-between gap-4 py-4 px-2">
+    <div class="text-sm text-premium-500 font-medium order-2 sm:order-1">
+        Showing <span class="font-black text-premium-900">@((PageIndex * PageSize) + 1)</span> to 
+        <span class="font-black text-premium-900">@(Math.Min((PageIndex + 1) * PageSize, TotalCount))</span> of 
+        <span class="font-black text-premium-900">@TotalCount</span> results
+    </div>
+    
+    <div class="flex items-center gap-1 order-1 sm:order-2">
+        <button @onclick="() => OnPageChanged.InvokeAsync(PageIndex - 1)" 
+                disabled="@(!HasPreviousPage)"
+                class="p-2 rounded-lg border border-premium-200 text-premium-600 hover:bg-premium-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
+
+        @foreach (var pageNum in GetVisiblePages())
+        {
+            var p = pageNum - 1;
+            <button @onclick="() => OnPageChanged.InvokeAsync(p)"
+                    class="@(PageIndex == p ? "bg-premium-600 text-white border-premium-600 shadow-lg shadow-premium-500/20" : "border-premium-200 text-premium-600 hover:bg-premium-50") px-4 py-2 rounded-lg border font-black text-xs transition-all">
+                @pageNum
+            </button>
+        }
+
+        <button @onclick="() => OnPageChanged.InvokeAsync(PageIndex + 1)" 
+                disabled="@(!HasNextPage)"
+                class="p-2 rounded-lg border border-premium-200 text-premium-600 hover:bg-premium-50 disabled:opacity-30 disabled:hover:bg-transparent transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </button>
+    </div>
+</div>
+
+@code {
+    [Parameter] public int TotalCount { get; set; }
+    [Parameter] public int PageIndex { get; set; }
+    [Parameter] public int PageSize { get; set; } = 10;
+    [Parameter] public EventCallback<int> OnPageChanged { get; set; }
+
+    private bool HasPreviousPage => PageIndex > 0;
+    private bool HasNextPage => (PageIndex + 1) * PageSize < TotalCount;
+    private int TotalPages => (int)Math.Ceiling((double)TotalCount / PageSize);
+
+    private List<int> GetVisiblePages()
+    {
+        var pages = new List<int>();
+        int start = Math.Max(1, PageIndex - 1);
+        int end = Math.Min(TotalPages, start + 3);
+        
+        if (end == TotalPages && TotalPages > 4) start = Math.Max(1, TotalPages - 3);
+
+        for (int i = start; i <= end; i++) pages.Add(i);
+        return pages;
+    }
+}

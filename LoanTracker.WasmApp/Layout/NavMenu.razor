@@ -1,0 +1,107 @@
+﻿<div class="flex flex-col h-full">
+    <!-- Brand -->
+    <div class="h-24 flex items-center px-6 bg-premium-950/50 border-b border-white/5">
+        <a class="flex items-center gap-4 hover:opacity-80 transition-opacity" href="">
+            <div class="p-1 rounded-2xl border-2 border-premium-500/30 bg-premium-900/50">
+                <img src="favicon.png" class="w-10 h-10 rounded-xl shadow-2xl shadow-premium-500/40" alt="Icon" />
+            </div>
+            <div class="flex flex-col">
+                <span class="text-white font-black text-xl tracking-tight leading-none">LoanTracker</span>
+                <span class="text-[9px] uppercase tracking-[0.3em] text-premium-400 font-bold mt-1">Enterprise Hub</span>
+            </div>
+        </a>
+        <button class="md:hidden ml-auto text-premium-300 hover:text-white" @onclick="ToggleNavMenu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        </button>
+    </div>
+
+    <!-- Nav Links -->
+    <nav class="@(collapseNavMenu ? "hidden" : "block") md:block flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+        <NavLink class="nav-item-premium" href="" Match="NavLinkMatch.All">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            <span>Overview</span>
+        </NavLink>
+
+        <div class="pt-4 pb-2 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-premium-500">Management</div>
+
+        <NavLink class="nav-item-premium" href="customers">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span>Customers</span>
+        </NavLink>
+
+        <NavLink class="nav-item-premium" href="loan-types">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+            <span>Loan Products</span>
+        </NavLink>
+
+        <div class="pt-4 pb-2 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-premium-500">Operations</div>
+
+        <NavLink class="nav-item-premium" href="loans">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>Active Loans</span>
+        </NavLink>
+
+        <NavLink class="nav-item-premium" href="payments">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span>Payments</span>
+        </NavLink>
+
+        <div class="pt-4 pb-2 px-4 text-[10px] font-black uppercase tracking-[0.2em] text-premium-500">System</div>
+
+        <NavLink class="nav-item-premium" href="generate-data">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            <span>Data Factory</span>
+        </NavLink>
+    </nav>
+
+    <!-- Footer -->
+    <div class="p-4 bg-premium-950/30">
+        <div class="card-premium bg-white/5 border-white/5 p-4 py-3">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-premium-500 flex items-center justify-center text-[10px] font-black text-white">AD</div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-bold text-white truncate">Administrator</p>
+                    <p class="text-[10px] text-premium-400 truncate tracking-wide">Premium Access</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-item-premium {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        border-radius: 0.75rem;
+        color: var(--color-premium-300);
+        font-weight: 700;
+        font-size: 0.875rem;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .nav-item-premium:hover {
+        color: white;
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+    .nav-item-premium.active {
+        color: white;
+        background-color: var(--color-premium-500);
+        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.2);
+    }
+    .nav-item-premium svg {
+        transition: transform 0.2s;
+    }
+    .nav-item-premium:hover svg {
+        transform: scale(1.1);
+    }
+</style>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

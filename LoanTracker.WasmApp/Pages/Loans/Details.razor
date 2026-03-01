@@ -1,0 +1,95 @@
+@page "/loans/details/{LoanId:int}"
+@inject IndexedDbService Db
+@inject NavigationManager Navigation
+@using System.Text.Json
+
+<PageTitle>Loan Analysis</PageTitle>
+
+<div class="max-w-6xl mx-auto py-10 px-6">
+    <div class="mb-10 flex justify-between items-end">
+        <div>
+            <button @onclick="@(() => Navigation.NavigateTo("/loans"))" class="text-premium-400 hover:text-premium-600 font-bold text-sm flex items-center gap-2 mb-4 group transition-colors">
+                <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Portfolio Index
+            </button>
+            <h1 class="text-4xl font-black text-premium-900 tracking-tight">Loan Analysis</h1>
+            <p class="text-premium-600 font-medium">Detailed performance and amortization for Reference #LN-@LoanId</p>
+        </div>
+        <div class="flex gap-3">
+            <span class="px-4 py-2 bg-green-100 text-green-700 rounded-xl text-xs font-black uppercase tracking-widest flex items-center gap-2">
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                Active Contract
+            </span>
+        </div>
+    </div>
+
+    @if (schedules == null)
+    {
+        <div class="py-24 text-center">
+            <div class="w-12 h-12 border-4 border-premium-100 border-t-premium-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <p class="text-premium-400 font-bold italic tracking-wide">Calculating amortization tables...</p>
+        </div>
+    }
+    else
+    {
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-10">
+            <Card Title="Contract Value" Class="lg:col-span-1">
+                <div class="text-2xl font-black text-premium-900 font-mono italic">@(GetTotalValue().ToString("N0"))</div>
+                <p class="text-[10px] uppercase font-black text-premium-400 tracking-widest mt-1">Total Receivable</p>
+            </Card>
+            <Card Title="Installments" Class="lg:col-span-1 border-l-4 border-l-premium-500">
+                <div class="text-2xl font-black text-premium-900 font-mono">@schedules.Count</div>
+                <p class="text-[10px] uppercase font-black text-premium-400 tracking-widest mt-1">Billing Cycles</p>
+            </Card>
+        </div>
+
+        <Card Title="Amortization Schedule">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-premium-500 border-b border-premium-100 text-xs uppercase tracking-[0.2em] font-black">
+                            <th class="pb-4 px-4 font-bold">Due Date</th>
+                            <th class="pb-4 px-4 font-bold text-right">Installment</th>
+                            <th class="pb-4 px-4 font-bold text-right">Principal</th>
+                            <th class="pb-4 px-4 font-bold text-right">Interest</th>
+                            <th class="pb-4 px-4 font-bold text-right">Balance</th>
+                            <th class="pb-4 px-4 font-bold text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-premium-50">
+                        @foreach (var s in schedules)
+                        {
+                            <tr class="group hover:bg-premium-50/50 transition-colors">
+                                <td class="py-4 px-4 font-bold text-premium-900">@s.GetProperty("dueDate").GetString()</td>
+                                <td class="py-4 px-4 text-right text-premium-900 font-mono font-bold">@s.GetProperty("installmentAmount").GetDecimal().ToString("N2")</td>
+                                <td class="py-4 px-4 text-right text-premium-600 font-mono">@s.GetProperty("principalComponent").GetDecimal().ToString("N2")</td>
+                                <td class="py-4 px-4 text-right text-premium-600 font-mono">@s.GetProperty("interestComponent").GetDecimal().ToString("N2")</td>
+                                <td class="py-4 px-4 text-right text-premium-400 font-mono text-xs italic">@s.GetProperty("remainingBalance").GetDecimal().ToString("N2")</td>
+                                <td class="py-4 px-4 text-center">
+                                    <span class="px-2 py-0.5 bg-premium-100 text-premium-700 rounded text-[10px] font-black uppercase tracking-wider">
+                                        @s.GetProperty("status").GetString()
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </Card>
+    }
+</div>
+
+@code {
+    [Parameter] public int LoanId { get; set; }
+    private List<JsonElement>? schedules;
+
+    protected override async Task OnInitializedAsync()
+    {
+        schedules = await Db.GetSchedulesForLoan(LoanId);
+    }
+
+    private decimal GetTotalValue()
+    {
+        return schedules?.Sum(s => s.GetProperty("installmentAmount").GetDecimal()) ?? 0;
+    }
+}

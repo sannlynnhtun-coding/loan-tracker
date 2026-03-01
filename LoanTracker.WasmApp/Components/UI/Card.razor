@@ -1,0 +1,15 @@
+<div class="card-premium @Class">
+    @if (!string.IsNullOrEmpty(Title))
+    {
+        <div class="flex items-center gap-2 mb-4">
+            <h3 class="text-xl font-bold text-premium-900 tracking-tight">@Title</h3>
+        </div>
+    }
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string Class { get; set; } = "";
+}

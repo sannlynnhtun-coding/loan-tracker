@@ -1,0 +1,69 @@
+﻿@page "/weather"
+@inject HttpClient Http
+
+<PageTitle>Market Weather Analysis</PageTitle>
+
+<div class="max-w-4xl mx-auto py-12">
+    <div class="mb-10">
+        <h1 class="text-3xl font-black text-premium-900 tracking-tight">Market Analytics</h1>
+        <p class="text-premium-600 font-medium">Real-time simulation of market volatility and environmental factors.</p>
+    </div>
+
+    @if (forecasts == null)
+    {
+        <div class="flex flex-col items-center justify-center py-24 gap-4">
+            <div class="w-12 h-12 border-4 border-premium-100 border-t-premium-600 rounded-full animate-spin"></div>
+            <p class="text-premium-400 font-bold animate-pulse">Fetching latest data points...</p>
+        </div>
+    }
+    else
+    {
+        <Card Class="overflow-hidden p-0">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="bg-premium-900 text-premium-100 text-xs uppercase tracking-widest font-bold">
+                            <th class="px-6 py-4">Verification Date</th>
+                            <th class="px-6 py-4">Celsius</th>
+                            <th class="px-6 py-4">Fahrenheit</th>
+                            <th class="px-6 py-4">Market Sentiment</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-premium-50">
+                        @foreach (var forecast in forecasts)
+                        {
+                            <tr class="hover:bg-premium-50/50 transition-colors">
+                                <td class="px-6 py-4 font-bold text-premium-900">@forecast.Date.ToShortDateString()</td>
+                                <td class="px-6 py-4 text-premium-600 font-mono">@forecast.TemperatureC°C</td>
+                                <td class="px-6 py-4 text-premium-600 font-mono">@forecast.TemperatureF°F</td>
+                                <td class="px-6 py-4">
+                                    <span class="px-2 py-0.5 bg-premium-100 text-premium-700 rounded text-[10px] font-black uppercase tracking-wider">@forecast.Summary</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </Card>
+    }
+</div>
+
+@code {
+    private WeatherForecast[]? forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+    }
+
+    public class WeatherForecast
+    {
+        public DateOnly Date { get; set; }
+
+        public int TemperatureC { get; set; }
+
+        public string? Summary { get; set; }
+
+        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    }
+}

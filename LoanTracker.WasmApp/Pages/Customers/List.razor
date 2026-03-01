@@ -1,0 +1,173 @@
+@page "/customers"
+@inject IndexedDbService Db
+@inject NavigationManager Navigation
+
+<PageTitle>Customer Directory</PageTitle>
+
+<div class="max-w-6xl mx-auto py-10 px-4 sm:px-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+        <div>
+            <h1 class="text-3xl sm:text-4xl font-black text-premium-900 tracking-tight">Customer Directory</h1>
+            <p class="text-premium-600 font-medium mt-1 italic">Manage your verified borrower profiles.</p>
+        </div>
+        <Button OnClick="@(() => Navigation.NavigateTo("/customers/create"))" Class="w-full md:w-auto shadow-xl">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+            Register New Customer
+        </Button>
+    </div>
+
+    <Card>
+        <div class="mb-8">
+            <div class="relative max-w-md">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-premium-400">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </span>
+                <input @bind="searchQuery" @bind:event="oninput" @onkeyup="HandleSearch" type="text" placeholder="Search by name or NRC..." 
+                       class="block w-full pl-10 pr-4 py-2 bg-premium-50 border border-premium-100 rounded-lg focus:ring-2 focus:ring-premium-500 focus:border-transparent transition-all outline-none text-premium-900 font-medium placeholder-premium-400" />
+            </div>
+        </div>
+
+        @if (pagedCustomers == null)
+        {
+            <div class="py-20 text-center animate-pulse">
+                <div class="w-8 h-8 bg-premium-200 rounded-full mx-auto mb-4"></div>
+                <p class="text-premium-400 font-black text-xs uppercase tracking-widest">Accessing repository...</p>
+            </div>
+        }
+        else if (!pagedCustomers.Any())
+        {
+            <div class="py-20 text-center">
+                <div class="w-16 h-16 bg-premium-50 rounded-full flex items-center justify-center text-premium-200 mx-auto mb-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                </div>
+                <p class="text-premium-400 font-bold italic">No borrowers match your criteria.</p>
+            </div>
+        }
+        else
+        {
+            <!-- Mobile View: Cards -->
+            <div class="grid grid-cols-1 gap-4 sm:hidden">
+                @foreach (var customer in pagedCustomers)
+                {
+                    <div class="p-4 bg-premium-50/50 rounded-2xl border border-premium-100 space-y-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-xl bg-premium-100 flex items-center justify-center text-premium-600 font-black text-xs">
+                                @GetInitials(customer.CustomerName)
+                            </div>
+                            <div>
+                                <h4 class="font-black text-premium-900">@customer.CustomerName</h4>
+                                <p class="text-[10px] text-premium-500 font-medium">NRC: @customer.Nrc</p>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-end pt-2 border-t border-premium-100/50">
+                            <div>
+                                <p class="text-[10px] uppercase font-black text-premium-400 tracking-wider">Contact</p>
+                                <p class="text-sm font-bold text-premium-700">@customer.MobileNo</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="p-2 text-premium-400 bg-white rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg></button>
+                                <button @onclick="() => OnDelete(customer.CustomerId)" class="p-2 text-rose-300 bg-white rounded-lg"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg></button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Tablet/Desktop View: Table -->
+            <div class="hidden sm:block overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="text-premium-500 border-b border-premium-100 text-xs uppercase tracking-[0.2em] font-black">
+                            <th class="pb-4 px-4 font-bold">Identified Borrower</th>
+                            <th class="pb-4 px-4 font-bold">NRC Reference</th>
+                            <th class="pb-4 px-4 font-bold">Contact</th>
+                            <th class="pb-4 px-4 font-bold text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-premium-50">
+                        @foreach (var customer in pagedCustomers)
+                        {
+                            <tr class="group hover:bg-premium-50/50 transition-colors">
+                                <td class="py-4 px-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-premium-100 flex items-center justify-center text-premium-600 font-black text-[10px]">
+                                            @GetInitials(customer.CustomerName)
+                                        </div>
+                                        <span class="font-bold text-premium-900">@customer.CustomerName</span>
+                                    </div>
+                                </td>
+                                <td class="py-4 px-4 text-premium-600 font-mono text-xs">@customer.Nrc</td>
+                                <td class="py-4 px-4 text-premium-600 font-medium">@customer.MobileNo</td>
+                                <td class="py-4 px-4 text-right">
+                                    <div class="flex justify-end gap-2">
+                                        <button class="p-2 text-premium-400 hover:text-premium-600 hover:bg-premium-100 rounded-lg transition-colors">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
+                                        </button>
+                                        <button @onclick="() => OnDelete(customer.CustomerId)" class="p-2 text-rose-300 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <Pagination TItem="CustomerResponse" 
+                        TotalCount="@FilteredCount" 
+                        PageIndex="@pageIndex" 
+                        PageSize="@pageSize" 
+                        OnPageChanged="OnPageChanged" />
+        }
+    </Card>
+</div>
+
+@code {
+    private List<CustomerResponse>? allCustomers;
+    private IEnumerable<CustomerResponse>? filteredCustomers => 
+        string.IsNullOrWhiteSpace(searchQuery) 
+        ? allCustomers 
+        : allCustomers?.Where(c => c.CustomerName.Contains(searchQuery, StringComparison.OrdinalIgnoreCase) || c.Nrc.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
+
+    private IEnumerable<CustomerResponse>? pagedCustomers => filteredCustomers?.Skip(pageIndex * pageSize).Take(pageSize);
+
+    private int FilteredCount => filteredCustomers?.Count() ?? 0;
+    private int pageIndex = 0;
+    private int pageSize = 5;
+    private string searchQuery = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadCustomers();
+    }
+
+    private async Task LoadCustomers()
+    {
+        allCustomers = await Db.GetAllCustomers();
+    }
+
+    private void HandleSearch()
+    {
+        pageIndex = 0;
+    }
+
+    private void OnPageChanged(int newIndex)
+    {
+        pageIndex = newIndex;
+    }
+
+    private async Task OnDelete(int id)
+    {
+        await Db.DeleteCustomer(id);
+        await LoadCustomers();
+    }
+
+    private string GetInitials(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name)) return "??";
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length == 1) return parts[0][0].ToString().ToUpper();
+        return (parts[0][0].ToString() + parts[^1][0].ToString()).ToUpper();
+    }
+}

@@ -1,0 +1,237 @@
+@page "/generate-data"
+@inject IndexedDbService Db
+@inject NavigationManager Navigation
+
+<PageTitle>Data Factory | Portfolio Simulation</PageTitle>
+
+<div class="max-w-4xl mx-auto py-12 px-4 sm:px-6">
+    <div class="mb-12">
+        <h1 class="text-3xl sm:text-5xl font-black text-premium-900 tracking-tighter">Data Factory</h1>
+        <p class="text-premium-600 font-medium mt-3 italic text-lg">Universal credit portfolio simulation engine.</p>
+    </div>
+
+    @if (isGenerating)
+    {
+        <Card Class="border-2 border-premium-100 shadow-2xl overflow-hidden relative">
+            <div class="absolute inset-0 bg-gradient-to-b from-premium-50/50 to-transparent pointer-events-none"></div>
+            
+            <div class="relative z-10 space-y-10 py-4">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-xs font-black uppercase tracking-[0.3em] text-premium-500">Operation Progress</span>
+                    <span class="text-2xl font-black text-premium-900 font-mono italic">@progressTarget%</span>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="h-4 w-full bg-premium-100 rounded-full overflow-hidden shadow-inner">
+                    <div class="h-full bg-premium-600 transition-all duration-700 ease-out" style="width: @progressActual%">
+                        <div class="h-full w-full bg-[linear-gradient(45deg,rgba(255,255,255,0.15)_25%,transparent_25%,transparent_50%,rgba(255,255,255,0.15)_50%,rgba(255,255,255,0.15)_75%,transparent_75%,transparent)] bg-[length:1rem_1rem] animate-[move_1s_linear_infinite]"></div>
+                    </div>
+                </div>
+
+                <!-- Step List -->
+                <div class="space-y-4">
+                    @foreach (var step in steps)
+                    {
+                        <div class="flex items-center gap-4 transition-all @(step.IsActive ? "scale-105" : step.IsDone ? "opacity-40" : "opacity-20")">
+                            <div class="w-8 h-8 rounded-lg flex items-center justify-center @(step.IsDone ? "bg-premium-600" : step.IsActive ? "bg-premium-900 animate-pulse" : "bg-premium-200") text-white">
+                                @if (step.IsDone)
+                                {
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                }
+                                else
+                                {
+                                    <span class="text-xs font-bold">@step.Order</span>
+                                }
+                            </div>
+                            <div>
+                                <p class="text-sm font-black text-premium-900 uppercase tracking-widest">@step.Label</p>
+                                @if (step.IsActive)
+                                {
+                                    <p class="text-[10px] text-premium-500 font-bold uppercase tracking-wider animate-bounce">Executing System Call...</p>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </Card>
+    }
+    else
+    {
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Purge Card -->
+            <div class="group cursor-pointer" @onclick="OnClearAll">
+                <div class="h-full p-8 rounded-3xl border-2 border-rose-100 bg-white hover:border-rose-300 hover:shadow-2xl hover:shadow-rose-500/10 transition-all space-y-6 relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-rose-50 rounded-full group-hover:scale-150 transition-transform flex items-center justify-center">
+                        <svg class="w-8 h-8 text-rose-300 transform group-hover:-rotate-12 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-black text-rose-900 tracking-tight">System Purge</h3>
+                        <p class="text-rose-600 font-medium text-sm mt-1">Irreversibly wipe local repository.</p>
+                    </div>
+                    <p class="text-rose-400 text-xs font-bold leading-relaxed">Clears all 7 tables: Customers, Loan Products, Active Contracts, Payment Schedules, and Arrears.</p>
+                    <div class="pt-2">
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-rose-300 group-hover:text-rose-600 transition-colors">Start Deconstruction →</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seed Card -->
+            <div class="group cursor-pointer" @onclick="OnGenerateData">
+                <div class="h-full p-8 rounded-3xl border-2 border-premium-100 bg-white hover:border-premium-300 hover:shadow-2xl hover:shadow-premium-500/10 transition-all space-y-6 relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-premium-50 rounded-full group-hover:scale-150 transition-transform flex items-center justify-center">
+                        <svg class="w-8 h-8 text-premium-300 transform group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-black text-premium-900 tracking-tight">Portfolio Factory</h3>
+                        <p class="text-premium-600 font-medium text-sm mt-1">Populate 7-table logic model.</p>
+                    </div>
+                    <p class="text-premium-400 text-xs font-bold leading-relaxed">Simulates cross-project alignment with high-fidelity Burmese product catalog and amortized schedules.</p>
+                    <div class="pt-2">
+                        <span class="text-[10px] font-black uppercase tracking-[0.2em] text-premium-400 group-hover:text-premium-600 transition-colors">Launch Simulation →</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="mt-16 flex flex-col sm:flex-row items-center justify-between gap-6 opacity-30">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 border-2 border-premium-900 rounded-xl flex items-center justify-center font-black">LT</div>
+            <div>
+                <p class="text-[10px] font-black uppercase tracking-widest text-premium-900">LoanTracker Enterprise</p>
+                <p class="text-[8px] font-bold text-premium-500">Core Logic Aligned v2.4</p>
+            </div>
+        </div>
+        <button @onclick="@(() => Navigation.NavigateTo("/"))" class="text-xs font-black uppercase tracking-widest hover:underline">Return to Hub</button>
+    </div>
+</div>
+
+<style>
+    @@keyframes move {
+        0% { background-position: 0 0; }
+        100% { background-position: 1rem 1rem; }
+    }
+</style>
+
+@code {
+    private bool isGenerating = false;
+    private int progressTarget = 0;
+    private int progressActual = 0;
+
+    private List<GenerationStep> steps = new()
+    {
+        new(1, "Deconstructing Repository"),
+        new(2, "Seeding Product Catalog"),
+        new(3, "Mapping Verified Borrowers"),
+        new(4, "Generating Active Portfolio"),
+        new(5, "Simulating Repayment Logic"),
+        new(6, "Finalizing Logic Sync")
+    };
+
+    private class GenerationStep
+    {
+        public int Order { get; }
+        public string Label { get; }
+        public bool IsActive { get; set; }
+        public bool IsDone { get; set; }
+
+        public GenerationStep(int order, string label)
+        {
+            Order = order;
+            Label = label;
+        }
+    }
+
+    private async Task UpdateProgress(int stepIndex, int target)
+    {
+        foreach (var s in steps) s.IsActive = false;
+        if (stepIndex < steps.Count) steps[stepIndex].IsActive = true;
+        
+        if (stepIndex > 0) steps[stepIndex - 1].IsDone = true;
+
+        progressTarget = target;
+        while (progressActual < progressTarget)
+        {
+            progressActual++;
+            StateHasChanged();
+            await Task.Delay(10);
+        }
+    }
+
+    private async Task OnClearAll()
+    {
+        isGenerating = true;
+        progressActual = 0;
+        await UpdateProgress(0, 50);
+        await Db.ClearAll();
+        await UpdateProgress(0, 100);
+        await Task.Delay(500);
+        isGenerating = false;
+    }
+
+    private async Task OnGenerateData()
+    {
+        isGenerating = true;
+        progressActual = 0;
+        
+        // Step 1: Purge
+        await UpdateProgress(0, 15);
+        await Db.ClearAll();
+
+        // Step 2: Products
+        await UpdateProgress(1, 30);
+        var loanTypes = new List<LoanTypeResponse>
+        {
+            new() { LoanTypeId = 1, LoanTypeName = "SME Core Capital", BurmeseLoanTypeName = "အသေးစား၊ အလတ်စား လုပ်ငန်းချေးငွေ", Description = "Enterprise-grade SME support." },
+            new() { LoanTypeId = 2, LoanTypeName = "Equity Flex Credit", BurmeseLoanTypeName = "ရွှေပေါင်နှံချေးငွေ", Description = "Asset-backed liquidity." },
+            new() { LoanTypeId = 3, LoanTypeName = "Agri-Harvest Fund", BurmeseLoanTypeName = "စိုက်ပျိုးရေး အထောက်အကူပြုချေးငွေ", Description = "Seasonal crop cycle financing." }
+        };
+        foreach (var type in loanTypes) await Db.AddLoanType(type);
+
+        // Step 3: Customers
+        await UpdateProgress(2, 45);
+        var customers = new List<CustomerResponse>
+        {
+            new() { CustomerId = 1, CustomerName = "Daw Hla Hla", Nrc = "12/MAGANA(N)123456", MobileNo = "09456789012", Address = "Yangon" },
+            new() { CustomerId = 2, CustomerName = "U Ba Kyaw", Nrc = "9/MAKANA(N)987654", MobileNo = "09123456789", Address = "Mandalay" },
+            new() { CustomerId = 3, CustomerName = "Maung Maung", Nrc = "7/PAMANA(N)112233", MobileNo = "09777888999", Address = "Naypyidaw" },
+            new() { CustomerId = 4, CustomerName = "Daw Nu Nu", Nrc = "5/KANANA(N)111111", MobileNo = "09111111111", Address = "Bago" }
+        };
+        foreach (var c in customers) await Db.AddCustomer(c);
+
+        // Step 4: Loans
+        await UpdateProgress(3, 65);
+        await Db.CreateLoan(new CustomerLoanRequest { CustomerId = 1, LoanTypeId = 1, PrincipalAmount = 10000000, InterestRate = 12, LoanTerm = 12, RepaymentFrequency = "Monthly", LoanStartDate = DateTime.Today.AddMonths(-2) });
+        await Db.CreateLoan(new CustomerLoanRequest { CustomerId = 2, LoanTypeId = 2, PrincipalAmount = 5000000, InterestRate = 14, LoanTerm = 6, RepaymentFrequency = "Monthly", LoanStartDate = DateTime.Today });
+        await Db.CreateLoan(new CustomerLoanRequest { CustomerId = 3, LoanTypeId = 3, PrincipalAmount = 2000000, InterestRate = 10, LoanTerm = 12, RepaymentFrequency = "Monthly", LoanStartDate = DateTime.Today.AddMonths(-1) });
+
+        // Step 5: Repayments
+        await UpdateProgress(4, 85);
+        var allLoans = await Db.GetAllLoans();
+        foreach (var loan in allLoans)
+        {
+            var schedules = await Db.GetSchedulesForLoan(loan.LoanId);
+            // Pay first 2 installments for loans that started in the past
+            if (loan.LoanStartDate < DateTime.Today)
+            {
+                var pastSchedules = schedules.Take(1).ToList();
+                foreach (var sch in pastSchedules)
+                {
+                    var sid = sch.GetProperty("scheduleId").GetInt32();
+                    var amt = sch.GetProperty("installmentAmount").GetDecimal();
+                    await Db.PostPayment(sid, amt, loan.LoanStartDate.AddMonths(1));
+                }
+            }
+        }
+
+        // Step 6: Finalize
+        await UpdateProgress(5, 100);
+        steps.Last().IsDone = true;
+        steps.Last().IsActive = false;
+        await Task.Delay(800);
+        
+        isGenerating = false;
+        Navigation.NavigateTo("/");
+    }
+}

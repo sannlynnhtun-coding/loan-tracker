@@ -1,0 +1,17 @@
+{
+  "name": "LoanTracker Enterprise",
+  "short_name": "LoanTracker",
+  "id": "./",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f0fdf4",
+  "theme_color": "#14532d",
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "favicon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
