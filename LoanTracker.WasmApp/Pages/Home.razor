@@ -1,7 +1,24 @@
 ﻿@page "/"
 @inject IndexedDbService Db
+@inject DataSeederService Seeder
+@inject NavigationManager Navigation
 
 <PageTitle>LoanTracker Dashboard</PageTitle>
+
+@if (isSeeding)
+{
+    <div class="fixed inset-0 z-50 flex items-center justify-center bg-premium-900/40 backdrop-blur-sm px-6">
+        <Card Class="max-w-md w-full border-none shadow-2xl relative overflow-hidden text-center py-12">
+            <div class="relative z-10 flex flex-col items-center gap-6">
+                <div class="w-16 h-16 border-4 border-premium-500 border-t-transparent rounded-full animate-spin"></div>
+                <div>
+                    <h3 class="text-2xl font-black text-premium-900 tracking-tight">Initializing Repository</h3>
+                    <p class="text-premium-500 font-bold uppercase tracking-widest text-[10px] mt-2 animate-pulse">Configuring Enterprise Ledger...</p>
+                </div>
+            </div>
+        </Card>
+    </div>
+}
 
 <div class="max-w-6xl mx-auto py-8 px-4">
     <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
@@ -94,7 +111,7 @@
         @if (customers?.Count > 5)
         {
             <div class="mt-6 pt-4 border-t border-premium-50 text-center">
-                <button class="text-premium-600 font-bold text-sm hover:text-premium-800 transition-colors">View All Customers ✨</button>
+                <button @onclick="@(() => Navigation.NavigateTo("/customers"))" class="text-premium-600 font-bold text-sm hover:text-premium-800 transition-colors">View All Customers ✨</button>
             </div>
         }
     </Card>
@@ -104,9 +121,17 @@
     private List<CustomerResponse>? customers;
     private List<LoanTypeResponse>? loanTypes;
     private List<CustomerLoanResponse>? loans;
+    private bool isSeeding = false;
 
     protected override async Task OnInitializedAsync()
     {
+        if (await Seeder.IsDatabaseEmpty())
+        {
+            isSeeding = true;
+            StateHasChanged();
+            await Seeder.SeedData();
+            isSeeding = false;
+        }
         await LoadData();
     }
 

@@ -1,5 +1,6 @@
 @page "/generate-data"
 @inject IndexedDbService Db
+@inject DataSeederService Seeder
 @inject NavigationManager Navigation
 
 <PageTitle>Data Factory | Portfolio Simulation</PageTitle>
@@ -143,12 +144,17 @@
         }
     }
 
-    private async Task UpdateProgress(int stepIndex, int target)
+    private async Task UpdateProgress(int target, string label)
     {
-        foreach (var s in steps) s.IsActive = false;
-        if (stepIndex < steps.Count) steps[stepIndex].IsActive = true;
-        
-        if (stepIndex > 0) steps[stepIndex - 1].IsDone = true;
+        var step = steps.FirstOrDefault(s => s.Label == label);
+        if (step != null)
+        {
+            foreach (var s in steps) s.IsActive = false;
+            step.IsActive = true;
+            
+            var prevIndex = steps.IndexOf(step) - 1;
+            if (prevIndex >= 0) steps[prevIndex].IsDone = true;
+        }
 
         progressTarget = target;
         while (progressActual < progressTarget)
@@ -163,9 +169,11 @@
     {
         isGenerating = true;
         progressActual = 0;
-        await UpdateProgress(0, 50);
+        await UpdateProgress(50, "Deconstructing Repository");
         await Db.ClearAll();
-        await UpdateProgress(0, 100);
+        await UpdateProgress(100, "Deconstructing Repository");
+        steps[0].IsDone = true;
+        steps[0].IsActive = false;
         await Task.Delay(500);
         isGenerating = false;
     }
@@ -175,58 +183,11 @@
         isGenerating = true;
         progressActual = 0;
         
-        // Step 1: Purge
-        await UpdateProgress(0, 15);
-        await Db.ClearAll();
-
-        // Step 2: Products
-        await UpdateProgress(1, 30);
-        var loanTypes = new List<LoanTypeResponse>
+        await Seeder.SeedData(async (target, label) => 
         {
-            new() { LoanTypeId = 1, LoanTypeName = "SME Core Capital", BurmeseLoanTypeName = "အသေးစား၊ အလတ်စား လုပ်ငန်းချေးငွေ", Description = "Enterprise-grade SME support." },
-            new() { LoanTypeId = 2, LoanTypeName = "Equity Flex Credit", BurmeseLoanTypeName = "ရွှေပေါင်နှံချေးငွေ", Description = "Asset-backed liquidity." },
-            new() { LoanTypeId = 3, LoanTypeName = "Agri-Harvest Fund", BurmeseLoanTypeName = "စိုက်ပျိုးရေး အထောက်အကူပြုချေးငွေ", Description = "Seasonal crop cycle financing." }
-        };
-        foreach (var type in loanTypes) await Db.AddLoanType(type);
+            await UpdateProgress(target, label);
+        });
 
-        // Step 3: Customers
-        await UpdateProgress(2, 45);
-        var customers = new List<CustomerResponse>
-        {
-            new() { CustomerId = 1, CustomerName = "Daw Hla Hla", Nrc = "12/MAGANA(N)123456", MobileNo = "09456789012", Address = "Yangon" },
-            new() { CustomerId = 2, CustomerName = "U Ba Kyaw", Nrc = "9/MAKANA(N)987654", MobileNo = "09123456789", Address = "Mandalay" },
-            new() { CustomerId = 3, CustomerName = "Maung Maung", Nrc = "7/PAMANA(N)112233", MobileNo = "09777888999", Address = "Naypyidaw" },
-            new() { CustomerId = 4, CustomerName = "Daw Nu Nu", Nrc = "5/KANANA(N)111111", MobileNo = "09111111111", Address = "Bago" }
-        };
-        foreach (var c in customers) await Db.AddCustomer(c);
-
-        // Step 4: Loans
-        await UpdateProgress(3, 65);
-        await Db.CreateLoan(new CustomerLoanRequest { CustomerId = 1, LoanTypeId = 1, PrincipalAmount = 10000000, InterestRate = 12, LoanTerm = 12, RepaymentFrequency = "Monthly", LoanStartDate = DateTime.Today.AddMonths(-2) });
-        await Db.CreateLoan(new CustomerLoanRequest { CustomerId = 2, LoanTypeId = 2, PrincipalAmount = 5000000, InterestRate = 14, LoanTerm = 6, RepaymentFrequency = "Monthly", LoanStartDate = DateTime.Today });
-        await Db.CreateLoan(new CustomerLoanRequest { CustomerId = 3, LoanTypeId = 3, PrincipalAmount = 2000000, InterestRate = 10, LoanTerm = 12, RepaymentFrequency = "Monthly", LoanStartDate = DateTime.Today.AddMonths(-1) });
-
-        // Step 5: Repayments
-        await UpdateProgress(4, 85);
-        var allLoans = await Db.GetAllLoans();
-        foreach (var loan in allLoans)
-        {
-            var schedules = await Db.GetSchedulesForLoan(loan.LoanId);
-            // Pay first 2 installments for loans that started in the past
-            if (loan.LoanStartDate < DateTime.Today)
-            {
-                var pastSchedules = schedules.Take(1).ToList();
-                foreach (var sch in pastSchedules)
-                {
-                    var sid = sch.GetProperty("scheduleId").GetInt32();
-                    var amt = sch.GetProperty("installmentAmount").GetDecimal();
-                    await Db.PostPayment(sid, amt, loan.LoanStartDate.AddMonths(1));
-                }
-            }
-        }
-
-        // Step 6: Finalize
-        await UpdateProgress(5, 100);
         steps.Last().IsDone = true;
         steps.Last().IsActive = false;
         await Task.Delay(800);
