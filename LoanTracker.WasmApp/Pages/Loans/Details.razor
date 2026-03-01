@@ -66,9 +66,22 @@
                                 <td class="py-4 px-4 text-right text-premium-600 font-mono">@s.GetProperty("interestComponent").GetDecimal().ToString("N2")</td>
                                 <td class="py-4 px-4 text-right text-premium-400 font-mono text-xs italic">@s.GetProperty("remainingBalance").GetDecimal().ToString("N2")</td>
                                 <td class="py-4 px-4 text-center">
-                                    <span class="px-2 py-0.5 bg-premium-100 text-premium-700 rounded text-[10px] font-black uppercase tracking-wider">
-                                        @s.GetProperty("status").GetString()
-                                    </span>
+                                    <div class="flex items-center justify-center gap-2">
+                                        @{
+                                            var status = s.GetProperty("status").GetString();
+                                            var sid = s.GetProperty("scheduleId").GetInt32();
+                                            var amount = s.GetProperty("installmentAmount").GetDecimal();
+                                        }
+                                        <span class="px-2 py-0.5 @(status == "Paid" ? "bg-emerald-100 text-emerald-700" : "bg-premium-100 text-premium-700") rounded text-[10px] font-black uppercase tracking-wider">
+                                            @status
+                                        </span>
+                                        @if (status == "Pending")
+                                        {
+                                            <button @onclick="() => SettleInstallment(sid, amount)" class="p-1 hover:bg-emerald-50 text-emerald-600 rounded transition-colors" title="Settle Manual">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            </button>
+                                        }
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -86,6 +99,13 @@
     protected override async Task OnInitializedAsync()
     {
         schedules = await Db.GetSchedulesForLoan(LoanId);
+    }
+
+    private async Task SettleInstallment(int sid, decimal amount)
+    {
+        await Db.PostPayment(sid, amount, DateTime.Today);
+        schedules = await Db.GetSchedulesForLoan(LoanId);
+        StateHasChanged();
     }
 
     private decimal GetTotalValue()

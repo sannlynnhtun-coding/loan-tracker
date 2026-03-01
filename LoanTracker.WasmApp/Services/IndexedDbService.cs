@@ -79,8 +79,23 @@ public class IndexedDbService
     #endregion
 
     #region Loans & Schedules (Business Logic)
-    public async Task<List<CustomerLoanResponse>> GetAllLoans() =>
-        await _jsRuntime.InvokeAsync<List<CustomerLoanResponse>>("dbInstance.loans.toArray");
+    public async Task<List<CustomerLoanResponse>> GetAllLoans()
+    {
+        var loans = await _jsRuntime.InvokeAsync<List<CustomerLoanResponse>>("dbInstance.loans.toArray");
+        var customers = await GetAllCustomers();
+        var loanTypes = await GetAllLoanTypes();
+
+        foreach (var loan in loans)
+        {
+            var customer = customers.FirstOrDefault(c => c.CustomerId == loan.CustomerId);
+            var type = loanTypes.FirstOrDefault(t => t.LoanTypeId == loan.LoanTypeId);
+
+            loan.CustomerName = customer?.CustomerName ?? "Unknown Customer";
+            loan.LoanTypeName = type?.LoanTypeName ?? "Unknown Product";
+        }
+
+        return loans;
+    }
 
     public async Task CreateLoan(CustomerLoanRequest request)
     {
@@ -174,5 +189,11 @@ public class IndexedDbService
             await _jsRuntime.InvokeVoidAsync("dbInstance.paymentSchedules.update", scheduleId, new { status = "Paid" });
         }
     }
+
+    public async Task<List<JsonElement>> GetAllPayments() =>
+        await _jsRuntime.InvokeAsync<List<JsonElement>>("dbInstance.payments.toArray");
+
+    public async Task<JsonElement> GetScheduleById(int id) =>
+        await _jsRuntime.InvokeAsync<JsonElement>("dbInstance.paymentSchedules.get", id);
     #endregion
 }

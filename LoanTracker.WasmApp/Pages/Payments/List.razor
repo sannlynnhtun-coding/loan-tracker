@@ -1,6 +1,7 @@
 @page "/payments"
 @inject IndexedDbService Db
 @inject NavigationManager Navigation
+@using System.Text.Json
 
 <PageTitle>Payment Processing</PageTitle>
 
@@ -16,24 +17,47 @@
             <table class="w-full text-left">
                 <thead>
                     <tr class="text-premium-500 border-b border-premium-100 text-xs uppercase tracking-[0.2em] font-black">
-                        <th class="pb-4 px-4 font-bold">Transaction Reference</th>
+                        <th class="pb-4 px-4 font-bold">Ref #</th>
                         <th class="pb-4 px-4 font-bold">Value Date</th>
-                        <th class="pb-4 px-4 font-bold">Amount Settled</th>
-                        <th class="pb-4 px-4 font-bold">Arrears/Fees</th>
-                        <th class="pb-4 px-4 font-bold text-right">Status</th>
+                        <th class="pb-4 px-4 font-bold">Customer / Loan</th>
+                        <th class="pb-4 px-4 font-bold text-right">Amount Settled</th>
+                        <th class="pb-4 px-4 font-bold text-center">Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-premium-50">
-                    <tr>
-                        <td colspan="5" class="py-20 text-center bg-premium-50/20 rounded-b-3xl">
-                            <div class="flex flex-col items-center gap-4">
-                                <div class="w-12 h-12 text-premium-200">
-                                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    @if (paymentRecords == null || !paymentRecords.Any())
+                    {
+                        <tr>
+                            <td colspan="5" class="py-20 text-center bg-premium-50/20 rounded-b-3xl">
+                                <div class="flex flex-col items-center gap-4">
+                                    <div class="w-12 h-12 text-premium-200">
+                                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                                    </div>
+                                    <span class="text-premium-400 font-black uppercase tracking-widest text-xs">No payment history identified in local journal</span>
                                 </div>
-                                <span class="text-premium-400 font-black uppercase tracking-widest text-xs">No payment history identified in local journal</span>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var p in paymentRecords)
+                        {
+                            <tr class="group hover:bg-premium-50/50 transition-colors">
+                                <td class="py-4 px-4 font-black text-premium-400 text-xs tracking-tighter">TRX-@p.PaymentId</td>
+                                <td class="py-4 px-4 font-bold text-premium-900 border-l-4 border-l-emerald-500/10">@p.PaymentDate.ToString("yyyy-MM-dd")</td>
+                                <td class="py-4 px-4">
+                                    <p class="font-black text-premium-900 leading-none">@p.CustomerName</p>
+                                    <p class="text-[10px] text-premium-400 font-bold uppercase tracking-wider mt-1">LN-@p.LoanId | @p.LoanType</p>
+                                </td>
+                                <td class="py-4 px-4 text-right text-emerald-700 font-mono font-black">@p.AmountPaid.ToString("N2")</td>
+                                <td class="py-4 px-4 text-center">
+                                    <span class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-black uppercase tracking-widest">
+                                        @p.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
         </div>
@@ -47,5 +71,51 @@
 </div>
 
 @code {
-    // This view will be expanded as we implement detailed schedule views
+    private List<PaymentJournalRecord>? paymentRecords;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var payments = await Db.GetAllPayments();
+        var loans = await Db.GetAllLoans();
+        var allSchedules = new List<JsonElement>();
+        
+        // Manual join to build a rich journal record
+        paymentRecords = new List<PaymentJournalRecord>();
+
+        foreach (var p in payments)
+        {
+            var sid = p.GetProperty("scheduleId").GetInt32();
+            // Fetch schedule to find loanId
+            var schedule = await Db.GetScheduleById(sid);
+            if (schedule.ValueKind != JsonValueKind.Undefined)
+            {
+                var lid = schedule.GetProperty("loanId").GetInt32();
+                var loan = loans.FirstOrDefault(l => l.LoanId == lid);
+                
+                paymentRecords.Add(new PaymentJournalRecord
+                {
+                    PaymentId = p.TryGetProperty("paymentId", out var pid) ? pid.GetInt32() : 0,
+                    PaymentDate = DateTime.Parse(p.GetProperty("paymentDate").GetString()!),
+                    AmountPaid = p.GetProperty("amount").GetDecimal(),
+                    Status = p.GetProperty("status").GetString() ?? "Success",
+                    LoanId = lid,
+                    CustomerName = loan?.CustomerName ?? "Unknown Customer",
+                    LoanType = loan?.LoanTypeName ?? "Unknown Product"
+                });
+            }
+        }
+
+        paymentRecords = paymentRecords.OrderByDescending(r => r.PaymentDate).ThenByDescending(r => r.PaymentId).ToList();
+    }
+
+    private class PaymentJournalRecord
+    {
+        public int PaymentId { get; set; }
+        public DateTime PaymentDate { get; set; }
+        public decimal AmountPaid { get; set; }
+        public string Status { get; set; } = null!;
+        public int LoanId { get; set; }
+        public string CustomerName { get; set; } = null!;
+        public string LoanType { get; set; } = null!;
+    }
 }
